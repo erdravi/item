@@ -1,184 +1,248 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Marriage Hall — Packing Tracker (Grouped)</title>
-  <style>
-    :root{
-      --accent:#1976d2;
-      --bg:#ffffff;
-      --panel:#f7f8fb;
-      --text:#111;
-      --muted:#666;
-      --card-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      --radius:10px;
-    }
-    html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    header{background:var(--accent);color:#fff;padding:14px 16px}
-    header h1{margin:0;font-size:18px}
-    .tabs{display:flex;gap:8px;padding:12px 16px;background:#fff;align-items:center;box-shadow:0 1px 0 rgba(0,0,0,0.04);position:sticky;top:0;z-index:10}
-    .tab-btn{padding:8px 12px;border-radius:8px;border:0;background:transparent;cursor:pointer;font-weight:600;color:var(--muted)}
-    .tab-btn.active{background:var(--accent);color:white}
-    main{padding:16px;display:flex;flex-direction:column;gap:16px;max-width:980px;margin:0 auto}
-    .card{background:var(--panel);padding:12px;border-radius:var(--radius);box-shadow:var(--card-shadow)}
-    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    label{display:block;font-size:13px;margin-top:8px;color:var(--muted)}
-    input[type="text"], select, input[type="number"]{padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);box-sizing:border-box;background:transparent}
-    input[type="text"], select{min-width:180px}
-    button{margin-top:8px;padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:white;cursor:pointer;font-weight:600}
-    .muted-btn{background:transparent;color:var(--accent);border:1px solid rgba(0,0,0,0.06);font-weight:600;padding:7px 10px;border-radius:8px;cursor:pointer}
-    ul{list-style:none;padding:0;margin:8px 0;max-width:100%}
-    li{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(0,0,0,0.02)}
-    .left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-    .checked{ text-decoration:line-through;color:gray;opacity:0.85 }
-    .icon-btn{cursor:pointer;border:0;background:transparent;font-size:16px;padding:6px}
-    .danger{color:#d32f2f}
-    .progress-wrap{background:rgba(0,0,0,0.04);border-radius:999px;height:14px;margin-top:8px;overflow:hidden}
-    .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#4fc3f7);transition:width 220ms ease}
-    .counts{font-size:13px;color:var(--muted);margin-top:8px}
-    .hint{font-size:13px;color:var(--muted);margin-top:6px}
-    .member-block{margin-top:12px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.02)}
-    .member-title{font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .member-items{margin-left:6px}
-    @media (max-width:720px){
-      main{padding:12px}
-      .row{flex-direction:column;align-items:stretch}
-      input[type="text"], select{width:100%}
-      li{flex-direction:column;align-items:flex-start}
-      li .right{margin-top:8px}
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Packing Tracker — Modern Clean</title>
+<style>
+  /* ---------- Theme & base ---------- */
+  :root{
+    --bg:#f4f8ff;
+    --card:#ffffff;
+    --primary:#1976d2;       /* bright modern blue */
+    --primary-2:#4fb3ff;
+    --muted:#6b7280;
+    --text:#0b1724;
+    --radius:14px;
+    --shadow-sm: 0 6px 18px rgba(11,23,36,0.06);
+    --shadow-hover: 0 14px 30px rgba(11,23,36,0.08);
+    --glass: rgba(255,255,255,0.9);
+    --danger:#d32f2f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  /* ---------- Header & tabs ---------- */
+  header{
+    background:linear-gradient(90deg,var(--primary),var(--primary-2));
+    color:white;padding:20px 18px;border-bottom-left-radius:18px;border-bottom-right-radius:18px;
+    position:sticky;top:0;z-index:40;
+    box-shadow:0 8px 30px rgba(25,118,210,0.08);
+  }
+  .container{max-width:1100px;margin:18px auto;padding:0 16px}
+  header .top{display:flex;gap:12px;align-items:center;justify-content:space-between}
+  header h1{margin:0;font-weight:700;font-size:18px;letter-spacing:0.2px}
+  .subtitle{opacity:0.95;font-size:13px}
+  .tabs{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .tab-btn{
+    background:transparent;border:0;padding:10px 14px;border-radius:10px;color:rgba(255,255,255,0.95);font-weight:600;
+    cursor:pointer;position:relative;overflow:visible;
+  }
+  .tab-btn::after{content:"";position:absolute;left:12px;right:12px;bottom:-8px;height:3px;border-radius:6px;opacity:0;transform:translateY(6px);transition:all 220ms}
+  .tab-btn.active{color:white}
+  .tab-btn.active::after{opacity:1;background:linear-gradient(90deg,rgba(255,255,255,0.18),rgba(255,255,255,0.08));transform:translateY(0)}
+  /* ---------- Layout ---------- */
+  main{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px}
+  .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow-sm);transition:box-shadow 180ms}
+  .card:hover{box-shadow:var(--shadow-hover)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  label{font-size:13px;color:var(--muted);display:block}
+  input[type="text"], select, input[type="number"]{
+    padding:10px;border-radius:10px;border:1px solid rgba(11,23,36,0.06);min-width:150px;background:transparent;outline:none;
+  }
+  input[type="text"]::placeholder{color:#c9d6ea}
+  button{padding:10px 12px;border-radius:10px;border:0;background:var(--primary);color:white;font-weight:700;cursor:pointer}
+  .muted-btn{border:1px solid rgba(11,23,36,0.06);background:transparent;color:var(--primary);padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+  .danger{color:var(--danger)}
+  .small{font-size:13px;color:var(--muted)}
+  /* ---------- Tables / lists ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(11,23,36,0.04);font-size:14px}
+  td.actions{text-align:right;white-space:nowrap}
+  .member-block{margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,252,255,0.99));box-shadow:0 6px 18px rgba(11,23,36,0.03)}
+  .member-title{font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .member-items{margin-left:6px}
+  .chk-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(11,23,36,0.03);align-items:center}
+  .muted-text{color:var(--muted);font-size:13px}
+  .qty-pill{background:rgba(25,118,210,0.06);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--primary);font-weight:700}
+  /* ---------- Focus & transitions ---------- */
+  input:focus, select:focus, button:focus{box-shadow:0 6px 20px rgba(25,118,210,0.08);transform:translateY(0)}
+  .fade{transition:all 180ms ease}
+  .muted-ghost{background:transparent;border:1px solid rgba(11,23,36,0.04);padding:8px 10px;border-radius:10px}
+  @media(min-width:920px){
+    main{grid-template-columns:1fr 420px}
+    .wide{grid-column:1 / -1}
+  }
+  @media(max-width:520px){
+    .tab-btn{padding:8px 10px;font-size:14px}
+    input[type="text"], select{min-width:120px}
+  }
+</style>
 </head>
 <body>
-  <header><h1>Marriage Hall — Packing Tracker</h1></header>
+  <header>
+    <div class="container">
+      <div class="top">
+        <div>
+          <h1>Packing Tracker</h1>
+          
+        </div>
+      
+      </div>
 
-  <div class="tabs" role="tablist" aria-label="Main tabs">
-    <button class="tab-btn active" data-tab="items" role="tab" aria-selected="true">Items</button>
-    <button class="tab-btn" data-tab="checklist" role="tab">Checklist</button>
-    <button class="tab-btn" data-tab="members" role="tab">Members</button>
-    <button class="tab-btn" data-tab="backup" role="tab">Backup</button>
+      <div class="tabs" role="tablist" aria-label="Main tabs" style="margin-top:14px">
+        <button class="tab-btn active" data-tab="items" role="tab" aria-selected="true">Items</button>
+        <button class="tab-btn" data-tab="checklist" role="tab">Checklist</button>
+        <button class="tab-btn" data-tab="members" role="tab">Members</button>
+        <button class="tab-btn" data-tab="backup" role="tab">Backup</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <main>
+      <!-- Items (wide) -->
+      <section id="items" class="card tab-panel wide">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h3 style="margin:0 0 6px 0">Master List — Add Item</h3>
+            <div class="small muted-text">Add item name and optional quantity. Select member from the list (Members tab).</div>
+          </div>
+          <div class="small muted-text">Packed items: fade & strikethrough</div>
+        </div>
+
+        <div class="row" style="margin-top:12px;align-items:end">
+          <div>
+            <label for="selectMember">Member</label>
+            <select id="selectMember"></select>
+          </div>
+          <div style="flex:1;min-width:160px">
+            <label for="itemName">Item</label>
+            <input id="itemName" type="text" placeholder="e.g., Towel" />
+          </div>
+          <div style="min-width:120px">
+            <label for="itemQty">Qty (optional)</label>
+            <input id="itemQty" type="number" min="1" placeholder="" />
+          </div>
+          <div style="align-self:flex-end">
+            <button id="addItemBtn">Add Item</button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px;align-items:center">
+          <div class="small muted-text">Members are managed in the Members tab</div>
+          <div style="margin-left:auto" class="small muted-text">Total items: <strong id="itemCount">0</strong></div>
+        </div>
+
+        <label style="margin-top:12px">Items (Master)</label>
+        <div style="overflow:auto">
+          <table aria-live="polite">
+            <thead><tr><th>Item</th><th style="width:90px">Qty</th><th style="width:170px">Member</th><th style="width:160px" class="actions">Actions</th></tr></thead>
+            <tbody id="itemsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Right column: Checklist / Members / Backup -->
+      <div>
+        <section id="checklist" class="card tab-panel" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h4 style="margin:0 0 6px 0">Checklist</h4>
+              <div class="small muted-text">Grouped by member. Use controls to filter or sort.</div>
+            </div>
+            <div class="small muted-text">Common appears first</div>
+          </div>
+
+          <div class="row" style="margin-top:8px;align-items:center;justify-content:space-between">
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="showOnlyPendingBtn" class="muted-btn">Show Only Pending</button>
+              <select id="sortMode" class="muted-btn" style="padding:9px;border-radius:10px">
+                <option value="added">Sort: Added order</option>
+                <option value="name">Sort: Name (A → Z)</option>
+              </select>
+              <button id="clearPackedBtn" class="muted-btn">Clear Packed (delete)</button>
+            </div>
+            <div class="small muted-text">Packed items move to bottom</div>
+          </div>
+
+          <div class="progress-wrap" style="margin-top:10px"><div id="progressBar" class="progress-bar" style="width:0%"></div></div>
+          <div id="progressText" class="small muted-text" style="margin-top:8px">Packed: 0 | Pending: 0 | 0%</div>
+
+          <div id="groupedChecklist" aria-live="polite" style="margin-top:12px"></div>
+        </section>
+
+        <section id="members" class="card tab-panel" style="display:none; margin-top:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h4 style="margin:0 0 6px 0">Members</h4>
+              <div class="small muted-text">Add, rename, or delete members. Common cannot be deleted.</div>
+            </div>
+            <div class="small muted-text">Total: <strong id="memberCount">0</strong></div>
+          </div>
+
+          <div class="row" style="margin-top:8px">
+            <input id="memberInput" type="text" placeholder="Add member (e.g., Priya)" style="flex:1" />
+            <button id="addMemberBtn">Add Member</button>
+          </div>
+
+          <div style="margin-top:12px;overflow:auto">
+            <table>
+              <thead><tr><th>Name</th><th style="width:120px" class="actions">Actions</th></tr></thead>
+              <tbody id="membersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="backup" class="card tab-panel" style="display:none; margin-top:18px">
+          <h4 style="margin:0 0 8px 0">Backup / Restore</h4>
+          <div class="small muted-text">Export or import full data (members + items). Restore will replace current data.</div>
+          <div class="row" style="margin-top:10px">
+            <button id="exportBtn">Download Backup (JSON)</button>
+            <button id="exportCompactBtn" class="muted-btn">Compact Backup</button>
+            <input id="fileInput" type="file" accept="application/json" style="margin-left:6px" />
+          </div>
+          <div class="row" style="margin-top:10px;align-items:center">
+            <button id="importBtn" class="muted-btn">Restore from File</button>
+            <button id="clearAllBtn" class="muted-btn danger" style="margin-left:auto">Clear ALL</button>
+          </div>
+        </section>
+      </div>
+    </main>
   </div>
 
-  <main>
-    <!-- ITEMS TAB -->
-    <section id="items" class="card tab-panel">
-      <h2 style="margin:0 0 6px 0">Items</h2>
-      <p class="hint">Add generic items (Towel, Toothbrush, Charger...). These appear in Checklist dropdown.</p>
-
-      <div class="row" style="align-items:center;">
-        <input id="itemInput" type="text" placeholder="Add new item (e.g., Towel)" />
-        <button id="addItemBtn">Add Item</button>
-      </div>
-
-      <label style="margin-top:12px">Your Items</label>
-      <ul id="itemList" aria-live="polite"></ul>
-      <div class="counts">Total items: <span id="itemCount">0</span></div>
-    </section>
-
-    <!-- CHECKLIST TAB -->
-    <section id="checklist" class="card tab-panel" style="display:none">
-      <h2 style="margin:0 0 6px 0">Checklist (Grouped by Member)</h2>
-      <p class="hint">Select Member (or Common), Item and Quantity. Entries appear grouped by member below.</p>
-
-      <div class="row" style="margin-top:6px;">
-        <div style="min-width:140px">
-          <label for="selectMember">Member</label>
-          <select id="selectMember"></select>
-        </div>
-        <div style="min-width:160px">
-          <label for="selectItem">Item</label>
-          <select id="selectItem"></select>
-        </div>
-        <div style="min-width:110px">
-          <label for="qty">Quantity</label>
-          <input id="qty" type="number" min="1" value="1" />
-        </div>
-        <div style="align-self:flex-end">
-          <button id="addChecklistBtn">Add</button>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
-        <button id="sortMembersBtn" class="muted-btn">Sort Members A–Z</button>
-        <button id="showAllBtn" class="muted-btn">Show All</button>
-        <button id="clearPackedBtn" class="muted-btn">Clear Packed (selected)</button>
-      </div>
-
-      <div class="progress-wrap" aria-hidden="false">
-        <div id="progressBar" class="progress-bar" style="width:0%"></div>
-      </div>
-      <div class="counts" id="progressText">Packed: 0 | Pending: 0 | 0%</div>
-
-      <label style="margin-top:12px">Grouped Checklist</label>
-      <div id="groupedChecklist" aria-live="polite"></div>
-    </section>
-
-    <!-- MEMBERS TAB -->
-    <section id="members" class="card tab-panel" style="display:none">
-      <h2 style="margin:0 0 6px 0">Members</h2>
-      <p class="hint">Add family members. "Common" is always available by default for shared items.</p>
-
-      <div class="row">
-        <input id="memberInput" type="text" placeholder="Add member (e.g., Ravi)" />
-        <button id="addMemberBtn">Add Member</button>
-      </div>
-
-      <label style="margin-top:12px">Members</label>
-      <ul id="memberList" aria-live="polite"></ul>
-      <div class="counts">Total members: <span id="memberCount">0</span></div>
-    </section>
-
-    <!-- BACKUP TAB -->
-    <section id="backup" class="card tab-panel" style="display:none">
-      <h2 style="margin:0 0 6px 0">Backup / Restore</h2>
-      <p class="hint">Export/Import entire data (Items, Members, Checklist) as JSON. Restore will replace current data.</p>
-
-      <div class="row" style="align-items:center;">
-        <button id="exportBtn">Download Backup (JSON)</button>
-        <input id="fileInput" type="file" accept="application/json" />
-        <button id="importBtn" class="muted-btn">Restore from File</button>
-        <button id="exportCompactBtn" class="muted-btn">Compact Backup</button>
-        <button id="clearAllBtn" class="muted-btn danger">Clear ALL Data</button>
-      </div>
-    </section>
-  </main>
-
   <script>
-    // Keys
-    const KEY_ITEMS = "mh_items_v3";
-    const KEY_MEMBERS = "mh_members_v3";
-    const KEY_CHECK = "mh_check_v3";
+    // Storage keys
+    const K_MEM = 'pt_members_final';
+    const K_ITEMS = 'pt_items_final';
 
     // Elements
     const tabs = document.querySelectorAll('.tab-btn');
     const panels = document.querySelectorAll('.tab-panel');
 
-    // Items tab
-    const itemInput = document.getElementById('itemInput');
+    // Items UI
+    const selectMember = document.getElementById('selectMember');
+    const itemName = document.getElementById('itemName');
+    const itemQty = document.getElementById('itemQty');
     const addItemBtn = document.getElementById('addItemBtn');
-    const itemList = document.getElementById('itemList');
+    const itemsTableBody = document.getElementById('itemsTableBody');
     const itemCount = document.getElementById('itemCount');
 
-    // Checklist tab
-    const selectMember = document.getElementById('selectMember');
-    const selectItem = document.getElementById('selectItem');
-    const qtyInput = document.getElementById('qty');
-    const addChecklistBtn = document.getElementById('addChecklistBtn');
+    // Checklist UI
     const groupedChecklist = document.getElementById('groupedChecklist');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
+    const showOnlyPendingBtn = document.getElementById('showOnlyPendingBtn');
+    const sortMode = document.getElementById('sortMode');
     const clearPackedBtn = document.getElementById('clearPackedBtn');
-    const showAllBtn = document.getElementById('showAllBtn');
-    const sortMembersBtn = document.getElementById('sortMembersBtn');
 
-    // Members tab
+    // Members UI
     const memberInput = document.getElementById('memberInput');
     const addMemberBtn = document.getElementById('addMemberBtn');
-    const memberList = document.getElementById('memberList');
+    const membersTableBody = document.getElementById('membersTableBody');
     const memberCount = document.getElementById('memberCount');
 
-    // Backup tab
+    // Backup UI
     const exportBtn = document.getElementById('exportBtn');
     const exportCompactBtn = document.getElementById('exportCompactBtn');
     const fileInput = document.getElementById('fileInput');
@@ -186,308 +250,323 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
 
     // Data
-    let items = [];
     let members = [];
-    let checklist = []; // { id, member, item, qty, done }
+    let items = []; // { id, name, qty|null, member, done, createdAt }
 
-    // View state
-    let showAll = false;
-    let sortMembersAZ = false;
+    // State
+    let showOnlyPending = false;
 
-    // Util
+    // Utils
     const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-    function save() { localStorage.setItem(KEY_ITEMS, JSON.stringify(items)); localStorage.setItem(KEY_MEMBERS, JSON.stringify(members)); localStorage.setItem(KEY_CHECK, JSON.stringify(checklist)); }
-    function load() { items = JSON.parse(localStorage.getItem(KEY_ITEMS) || "null") || []; members = JSON.parse(localStorage.getItem(KEY_MEMBERS) || "null") || []; checklist = JSON.parse(localStorage.getItem(KEY_CHECK) || "null") || []; }
 
-    // Tabs
+    function save() {
+      localStorage.setItem(K_MEM, JSON.stringify(members));
+      localStorage.setItem(K_ITEMS, JSON.stringify(items));
+    }
+    function load() {
+      members = JSON.parse(localStorage.getItem(K_MEM) || 'null') || [];
+      items = JSON.parse(localStorage.getItem(K_ITEMS) || 'null') || [];
+    }
+
+    // Tab switching
     tabs.forEach(btn => {
       btn.addEventListener('click', () => {
         tabs.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
         btn.classList.add('active'); btn.setAttribute('aria-selected','true');
         const t = btn.dataset.tab;
         panels.forEach(p => p.style.display = p.id === t ? '' : 'none');
-        if (t === 'items') renderItems();
-        if (t === 'checklist') { renderSelects(); renderGroupedChecklist(); }
-        if (t === 'members') renderMembers();
+        if (t === 'items') renderItemsTable();
+        if (t === 'checklist') renderChecklist();
+        if (t === 'members') renderMembersTable();
       });
     });
 
     // Defaults
     function ensureDefaults() {
-      if (!members.includes('Common')) members.unshift('Common');
-      if (members.length === 0) members = ['Common','You','Spouse','Kid1','Kid2'];
-      if (items.length === 0) items = ['Towel','Toothbrush','Comb','Perfume'];
+      const def = ['Common','Ravikumar','Divya','Sarnith','Nethra'];
+      if (!members || members.length === 0) members = [...def];
+      // dedupe and keep Common first
+      members = Array.from(new Set(members));
+      members = members.filter(m => m !== 'Common');
+      members.unshift('Common');
       save();
     }
 
-    // ITEMS
-    function renderItems() {
-      itemList.innerHTML = '';
-      items.forEach((it, idx) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="left"><strong>${esc(it)}</strong></div>
-          <div class="right">
-            <button class="icon-btn" title="Edit" data-idx="${idx}">✏️</button>
-            <button class="icon-btn danger" title="Delete" data-idx="${idx}">🗑️</button>
-          </div>`;
-        const editBtn = li.querySelector('button[title="Edit"]');
-        const delBtn = li.querySelector('button[title="Delete"]');
-        editBtn.addEventListener('click', () => {
-          const newName = prompt('Edit item name:', it);
-          if (!newName) return;
-          const v = newName.trim();
-          if (!v) return alert('Name cannot be empty.');
-          if (items.find((x,i)=>x.toLowerCase()===v.toLowerCase() && i!==idx)) return alert('Item already exists.');
-          const old = items[idx];
-          items[idx] = v;
-          checklist.forEach(c => { if (c.item === old) c.item = v; });
-          save(); renderItems(); renderSelects(); renderGroupedChecklist();
-        });
-        delBtn.addEventListener('click', () => {
-          if (!confirm('Delete this item? This will remove it from checklist.')) return;
-          const removed = items.splice(idx,1)[0];
-          checklist = checklist.filter(c => c.item !== removed);
-          save(); renderItems(); renderSelects(); renderGroupedChecklist();
-        });
-        itemList.appendChild(li);
+    // Render member select
+    function renderMemberSelect() {
+      const prev = selectMember.value;
+      selectMember.innerHTML = '';
+      members.forEach(m => {
+        const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o);
       });
-      itemCount.textContent = items.length;
+      if (members.includes(prev)) selectMember.value = prev;
     }
 
+    // Render Items table
+    function renderItemsTable() {
+      itemsTableBody.innerHTML = '';
+      items.forEach(it => {
+        const tr = document.createElement('tr');
+        const qtyDisplay = (it.qty === null || it.qty === undefined || it.qty === '') ? '' : `<span class="qty-pill">${esc(it.qty)}</span>`;
+        tr.innerHTML = `<td><strong style="${it.done ? 'opacity:0.6;text-decoration:line-through' : ''}">${esc(it.name)}</strong></td>
+                        <td>${qtyDisplay}</td>
+                        <td>${esc(it.member)}</td>
+                        <td class="actions">
+                          <button class="icon-btn edit-item" data-id="${it.id}" title="Edit">✏️</button>
+                          <button class="icon-btn danger del-item" data-id="${it.id}" title="Delete">🗑️</button>
+                        </td>`;
+        itemsTableBody.appendChild(tr);
+      });
+      itemCount.textContent = items.length;
+
+      // listeners for row actions
+      itemsTableBody.querySelectorAll('.del-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          if (!confirm('Delete this item from Master List?')) return;
+          items = items.filter(x => x.id !== id);
+          save(); renderItemsTable(); renderChecklist();
+        });
+      });
+      itemsTableBody.querySelectorAll('.edit-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const it = items.find(x => x.id === id);
+          if (!it) return;
+          const newName = prompt('Edit item name:', it.name);
+          if (newName === null) return;
+          const nm = newName.trim();
+          if (!nm) return alert('Name cannot be empty.');
+          const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
+          if (newQty === null) return;
+          const qVal = newQty.trim() === '' ? null : Number(newQty);
+          if (qVal !== null && (!Number.isFinite(qVal) || qVal < 1)) return alert('Quantity must be a positive number or left blank.');
+          const newMember = prompt('Edit member (enter exact name):', it.member);
+          if (newMember === null) return;
+          if (!members.includes(newMember)) return alert('Member not found. Add members in Members tab first.');
+          it.name = nm; it.qty = qVal; it.member = newMember;
+          save(); renderItemsTable(); renderChecklist();
+        });
+      });
+    }
+
+    // Add item
     addItemBtn.addEventListener('click', () => {
-      const v = itemInput.value.trim();
-      if (!v) return alert('Enter an item name.');
-      if (items.find(x => x.toLowerCase() === v.toLowerCase())) return alert('Item already exists.');
-      items.push(v);
-      itemInput.value = '';
-      save(); renderItems(); renderSelects();
+      const member = selectMember.value;
+      const name = (itemName.value || '').trim();
+      const qtyRaw = (itemQty.value || '').toString().trim();
+      const qty = qtyRaw === '' ? null : Number(qtyRaw);
+      if (!member) return alert('Select a member.');
+      if (!name) return alert('Enter an item name.');
+      if (qty !== null && (!Number.isFinite(qty) || qty < 1)) return alert('Quantity must be positive or left blank.');
+      items.push({ id: uid(), name, qty, member, done: false, createdAt: Date.now() });
+      itemName.value = ''; itemQty.value = '';
+      save(); renderItemsTable();
+      if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
     });
-    itemInput.addEventListener('keydown', e => { if (e.key === 'Enter') addItemBtn.click(); });
+    itemName.addEventListener('keydown', e => { if (e.key === 'Enter') addItemBtn.click(); });
+
+    // CHECKLIST
+    function renderChecklist() {
+      // group by member preserving members order (Common first)
+      const grouped = {};
+      members.forEach(m => grouped[m] = []);
+      items.forEach(it => {
+        if (!grouped[it.member]) grouped[it.member] = [];
+        grouped[it.member].push(it);
+      });
+
+      // sort groups
+      const mode = sortMode.value || 'added';
+      for (const k in grouped) {
+        if (mode === 'name') grouped[k].sort((a,b) => a.name.localeCompare(b.name));
+        else grouped[k].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+      }
+
+      groupedChecklist.innerHTML = '';
+      let totalPacked = 0, totalItems = 0;
+
+      members.forEach(memberName => {
+        const arr = grouped[memberName] || [];
+        const pending = arr.filter(x => !x.done);
+        const packed = arr.filter(x => x.done);
+        totalPacked += packed.length;
+        totalItems += arr.length;
+        const arrToShow = showOnlyPending ? pending : [...pending, ...packed];
+
+        if (arrToShow.length === 0) {
+          if (!showOnlyPending) {
+            const block = document.createElement('div'); block.className = 'member-block';
+            const header = document.createElement('div'); header.className = 'member-title';
+            header.innerHTML = `<span>${memberName === 'Common' ? '🏠 Common' : '👤 ' + esc(memberName)}</span><span class="small muted-text">(no items)</span>`;
+            block.appendChild(header);
+            groupedChecklist.appendChild(block);
+          }
+          return;
+        }
+
+        const block = document.createElement('div'); block.className = 'member-block';
+        const header = document.createElement('div'); header.className = 'member-title';
+        header.innerHTML = `<span>${memberName === 'Common' ? '🏠 Common' : '👤 ' + esc(memberName)}</span><span class="small muted-text">${arr.length} item(s) • ${packed.length} packed</span>`;
+        block.appendChild(header);
+
+        const list = document.createElement('div'); list.className = 'member-items';
+        arrToShow.forEach(c => {
+          const row = document.createElement('div'); row.className = 'chk-item';
+          const qtyText = (c.qty == null || c.qty === '') ? '' : `<span class="qty-pill">${esc(c.qty)}</span>`;
+          row.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              <input type="checkbox" class="chkbox" data-id="${c.id}" ${c.done ? 'checked' : ''} />
+              <div style="min-width:0;overflow:hidden">
+                <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                  <strong style="${c.done ? 'opacity:0.6;text-decoration:line-through' : ''}">${esc(c.name)}</strong>
+                  ${qtyText ? ` <span style="margin-left:6px">${qtyText}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div style="white-space:nowrap">
+              <button class="icon-btn edit-item" data-id="${c.id}" title="Edit">✏️</button>
+              <button class="icon-btn danger del-item" data-id="${c.id}" title="Delete">🗑️</button>
+            </div>`;
+          list.appendChild(row);
+        });
+        block.appendChild(list);
+        groupedChecklist.appendChild(block);
+      });
+
+      // attach listeners
+      groupedChecklist.querySelectorAll('.chkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const id = cb.dataset.id;
+          const it = items.find(x => x.id === id);
+          if (!it) return;
+          it.done = cb.checked;
+          save(); renderChecklist(); renderItemsTable();
+        });
+      });
+      groupedChecklist.querySelectorAll('.del-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          if (!confirm('Delete this item from Master List?')) return;
+          items = items.filter(x => x.id !== id);
+          save(); renderChecklist(); renderItemsTable();
+        });
+      });
+      groupedChecklist.querySelectorAll('.edit-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const it = items.find(x => x.id === id);
+          if (!it) return;
+          const newName = prompt('Edit item name:', it.name);
+          if (newName === null) return;
+          const nm = newName.trim(); if (!nm) return alert('Name cannot be empty.');
+          const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
+          if (newQty === null) return;
+          const qVal = newQty.trim() === '' ? null : Number(newQty);
+          if (qVal !== null && (!Number.isFinite(qVal) || qVal < 1)) return alert('Quantity must be positive or left blank.');
+          const newMember = prompt('Edit member (enter exact name):', it.member);
+          if (newMember === null) return;
+          if (!members.includes(newMember)) return alert('Member not found. Add members in Members tab.');
+          it.name = nm; it.qty = qVal; it.member = newMember;
+          save(); renderChecklist(); renderItemsTable();
+        });
+      });
+
+      const pct = totalItems === 0 ? 0 : Math.round((totalPacked / totalItems) * 100);
+      progressBar.style.width = pct + '%';
+      progressText.textContent = `Packed: ${totalPacked} | Pending: ${totalItems - totalPacked} | ${pct}%`;
+    }
+
+    showOnlyPendingBtn.addEventListener('click', () => {
+      showOnlyPending = !showOnlyPending;
+      showOnlyPendingBtn.textContent = showOnlyPending ? 'Show All' : 'Show Only Pending';
+      renderChecklist();
+    });
+    sortMode.addEventListener('change', renderChecklist);
+
+    clearPackedBtn.addEventListener('click', () => {
+      if (!confirm('Remove all packed items from the Master List?')) return;
+      items = items.filter(x => !x.done);
+      save(); renderChecklist(); renderItemsTable();
+    });
 
     // MEMBERS
-    function renderMembers() {
-      memberList.innerHTML = '';
-      members.forEach((m, idx) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="left"><strong>${esc(m)}</strong></div>
-          <div class="right">
-            <button class="icon-btn" title="Edit" data-idx="${idx}">✏️</button>
-            <button class="icon-btn danger" title="Delete" data-idx="${idx}">🗑️</button>
-          </div>`;
-        const editBtn = li.querySelector('button[title="Edit"]');
-        const delBtn = li.querySelector('button[title="Delete"]');
-        editBtn.addEventListener('click', () => {
-          if (m === 'Common') return alert('Cannot rename Common. Delete and re-add if needed.');
-          const newName = prompt('Edit member name:', m);
-          if (!newName) return;
-          const v = newName.trim();
-          if (!v) return alert('Name cannot be empty.');
-          if (members.find((x,i)=>x.toLowerCase()===v.toLowerCase() && i!==idx)) return alert('Member already exists.');
-          const old = members[idx];
-          members[idx] = v;
-          checklist.forEach(c => { if (c.member === old) c.member = v; });
-          save(); renderMembers(); renderSelects(); renderGroupedChecklist();
-        });
-        delBtn.addEventListener('click', () => {
-          if (m === 'Common') return alert('Cannot delete Common.');
-          if (!confirm('Delete this member and their checklist entries?')) return;
-          const removed = members.splice(idx,1)[0];
-          checklist = checklist.filter(c => c.member !== removed);
-          save(); renderMembers(); renderSelects(); renderGroupedChecklist();
-        });
-        memberList.appendChild(li);
+    function renderMembersTable() {
+      membersTableBody.innerHTML = '';
+      members.forEach(m => {
+        const isCommon = m === 'Common';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${esc(m)}</strong></td>
+                        <td class="actions">
+                          <button class="icon-btn edit-member" data-name="${esc(m)}" ${isCommon ? 'disabled title="Cannot rename Common"' : ''}>✏️</button>
+                          <button class="icon-btn danger del-member" data-name="${esc(m)}" ${isCommon ? 'disabled title="Cannot delete Common"' : ''}>🗑️</button>
+                        </td>`;
+        membersTableBody.appendChild(tr);
       });
       memberCount.textContent = members.length;
+
+      // legend listeners
+      membersTableBody.querySelectorAll('.edit-member').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const oldName = btn.dataset.name;
+          const newName = prompt('Edit member name:', oldName);
+          if (newName === null) return;
+          const v = newName.trim(); if (!v) return alert('Name cannot be empty.');
+          if (members.find(m => m.toLowerCase() === v.toLowerCase())) return alert('Member already exists.');
+          members = members.map(m => m === oldName ? v : m);
+          items.forEach(it => { if (it.member === oldName) it.member = v; });
+          save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+        });
+      });
+
+      membersTableBody.querySelectorAll('.del-member').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.name;
+          const assigned = items.filter(it => it.member === name);
+          if (assigned.length > 0) {
+            if (!confirm(`${name} has ${assigned.length} assigned item(s). Click OK to reassign them to Common and delete the member.`)) return;
+            assigned.forEach(it => it.member = 'Common');
+            members = members.filter(m => m !== name);
+            save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+            return;
+          } else {
+            if (!confirm(`Delete member "${name}"?`)) return;
+            members = members.filter(m => m !== name);
+            save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+          }
+        });
+      });
     }
 
     addMemberBtn.addEventListener('click', () => {
-      const v = memberInput.value.trim();
+      const v = (memberInput.value || '').trim();
       if (!v) return alert('Enter member name.');
-      if (members.find(x => x.toLowerCase() === v.toLowerCase())) return alert('Member already exists.');
+      if (members.find(m => m.toLowerCase() === v.toLowerCase())) return alert('Member already exists.');
       members.push(v);
       memberInput.value = '';
-      save(); renderMembers(); renderSelects();
+      save(); renderMemberSelect(); renderMembersTable();
     });
     memberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMemberBtn.click(); });
 
-    // SELECTS
-    function renderSelects() {
-      const curMember = selectMember.value;
-      const curItem = selectItem.value;
+    function renderMemberSelect() {
+      const prev = selectMember.value;
       selectMember.innerHTML = '';
-      members.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o); });
-      selectItem.innerHTML = '';
-      items.forEach(it => { const o = document.createElement('option'); o.value = it; o.textContent = it; selectItem.appendChild(o); });
-      if (!members.length) selectMember.innerHTML = '<option value="">-- Add member first --</option>';
-      if (!items.length) selectItem.innerHTML = '<option value="">-- Add item first --</option>';
-      if (members.includes(curMember)) selectMember.value = curMember;
-      if (items.includes(curItem)) selectItem.value = curItem;
+      members.forEach(m => {
+        const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o);
+      });
+      if (members.includes(prev)) selectMember.value = prev;
     }
 
-    // CHECKLIST
-    addChecklistBtn.addEventListener('click', () => {
-      const member = selectMember.value;
-      const item = selectItem.value;
-      const qty = Number(qtyInput.value) || 0;
-      if (!member) return alert('Select a member (or Common).');
-      if (!item) return alert('Select an item.');
-      if (!qty || qty < 1) return alert('Enter a valid quantity (min 1).');
-      const existing = checklist.find(c => c.member === member && c.item === item);
-      if (existing) {
-        existing.qty = existing.qty + qty;
-      } else {
-        checklist.push({ id: uid(), member, item, qty, done: false });
-      }
-      qtyInput.value = 1;
-      save(); renderGroupedChecklist();
-    });
-    qtyInput.addEventListener('keydown', e => { if (e.key === 'Enter') addChecklistBtn.click(); });
-
-    function renderGroupedChecklist() {
-      // Build grouping
-      const grouped = {};
-      const membersOrder = sortMembersAZ ? [...members].sort((a,b)=>a.localeCompare(b)) : [...members];
-      // initialize groups (so even members with zero items show)
-      membersOrder.forEach(m => grouped[m] = []);
-      // choose which items to include based on showAll or selected member
-      const selMember = selectMember.value;
-      const rows = showAll ? checklist.slice() : (selMember ? checklist.filter(c => c.member === selMember) : checklist.slice());
-      rows.forEach(c => {
-        if (!grouped[c.member]) grouped[c.member] = [];
-        grouped[c.member].push(c);
-      });
-
-      // Render
-      groupedChecklist.innerHTML = '';
-      let totalPacked = 0, totalItems = 0;
-      membersOrder.forEach(memberName => {
-        const arr = grouped[memberName] || [];
-        // skip empty groups unless showAll is true or it's the selected member or there are any items
-        if (arr.length === 0 && !showAll && selectMember.value && selectMember.value !== memberName) {
-          // skip
-        } else {
-          const block = document.createElement('div');
-          block.className = 'member-block';
-          const packedCount = arr.filter(x=>x.done).length;
-          totalPacked += packedCount;
-          totalItems += arr.length;
-          const header = document.createElement('div');
-          header.className = 'member-title';
-          header.innerHTML = `<span>👤 ${esc(memberName)}</span><span style="font-size:13px;color:var(--muted)">${arr.length} item(s) • ${packedCount} packed</span>`;
-          block.appendChild(header);
-
-          const list = document.createElement('div');
-          list.className = 'member-items';
-          if (arr.length === 0) {
-            const p = document.createElement('div'); p.style.color = 'var(--muted)'; p.style.padding = '6px 0'; p.textContent = '(no items)';
-            list.appendChild(p);
-          } else {
-            arr.forEach(c => {
-              const li = document.createElement('div');
-              li.style.display = 'flex';
-              li.style.justifyContent = 'space-between';
-              li.style.alignItems = 'center';
-              li.style.padding = '6px 0';
-              li.innerHTML = `<div style="display:flex;gap:8px;align-items:center;min-width:0">
-                <input type="checkbox" ${c.done ? 'checked' : ''} class="chkbox" data-id="${c.id}" />
-                <div style="min-width:0;overflow:hidden">
-                  <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-                    <strong>${esc(c.item)}</strong> <small style="color:var(--muted)">x${c.qty}</small>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <button class="icon-btn edit-btn" data-id="${c.id}">✏️</button>
-                <button class="icon-btn danger del-btn" data-id="${c.id}">🗑️</button>
-              </div>`;
-              list.appendChild(li);
-            });
-          }
-          block.appendChild(list);
-          groupedChecklist.appendChild(block);
-        }
-      });
-
-      // attach listeners for dynamic elements (checkboxes, edit, delete)
-      groupedChecklist.querySelectorAll('.chkbox').forEach(cb => {
-        cb.addEventListener('change', () => {
-          const id = cb.getAttribute('data-id');
-          const idx = checklist.findIndex(x => x.id === id);
-          if (idx >= 0) { checklist[idx].done = cb.checked; save(); renderGroupedChecklist(); }
-        });
-      });
-      groupedChecklist.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          const c = checklist.find(x => x.id === id);
-          if (!c) return;
-          const newQty = prompt('Edit quantity (number):', c.qty);
-          if (newQty === null) return;
-          const qn = Number(newQty);
-          if (!qn || qn < 1) return alert('Quantity must be number >=1');
-          const newMember = prompt('Edit member:', c.member);
-          if (!newMember) return;
-          if (!members.find(m => m === newMember)) return alert('Member not found. Edit members tab first.');
-          const newItem = prompt('Edit item:', c.item);
-          if (!newItem) return;
-          if (!items.find(it => it === newItem)) return alert('Item not found. Edit items tab first.');
-          const idx = checklist.findIndex(x => x.id === id);
-          if (idx >= 0) {
-            checklist[idx].qty = qn;
-            checklist[idx].member = newMember;
-            checklist[idx].item = newItem;
-            save(); renderGroupedChecklist();
-          }
-        });
-      });
-      groupedChecklist.querySelectorAll('.del-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          if (!confirm('Delete this checklist entry?')) return;
-          const idx = checklist.findIndex(x => x.id === id);
-          if (idx >= 0) checklist.splice(idx,1);
-          save(); renderGroupedChecklist();
-        });
-      });
-
-      // progress
-      const total = totalItems;
-      const pct = total === 0 ? 0 : Math.round((totalPacked / total) * 100);
-      progressBar.style.width = pct + '%';
-      progressText.textContent = `Packed: ${totalPacked} | Pending: ${total - totalPacked} | ${pct}%`;
-    }
-
-    clearPackedBtn.addEventListener('click', () => {
-      const member = selectMember.value;
-      if (!member) return alert('Select a member first.');
-      if (!confirm(`Remove packed items for ${member}?`)) return;
-      checklist = checklist.filter(c => !(c.member === member && c.done));
-      save(); renderGroupedChecklist();
-    });
-
-    showAllBtn.addEventListener('click', () => {
-      showAll = !showAll;
-      showAllBtn.textContent = showAll ? 'Show Selected Member' : 'Show All';
-      renderGroupedChecklist();
-    });
-
-    sortMembersBtn.addEventListener('click', () => {
-      sortMembersAZ = !sortMembersAZ;
-      sortMembersBtn.textContent = sortMembersAZ ? 'Unsort Members' : 'Sort Members A–Z';
-      renderGroupedChecklist();
-    });
-
-    // Backup & Restore
+    // BACKUP & RESTORE
     exportBtn.addEventListener('click', () => {
-      const data = { items, members, checklist, exportedAt: new Date().toISOString() };
+      const data = { members, items, exportedAt: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'packing_backup.json'; a.click(); URL.revokeObjectURL(url);
     });
-
     exportCompactBtn.addEventListener('click', () => {
-      const data = { items, members, checklist };
+      const data = { members, items };
       const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'packing_compact.json'; a.click(); URL.revokeObjectURL(url);
@@ -499,19 +578,17 @@
       fr.onload = (e) => {
         try {
           const d = JSON.parse(e.target.result);
-          if (!Array.isArray(d.items) || !Array.isArray(d.members) || !Array.isArray(d.checklist)) {
-            return alert('Invalid file format. Expect { items:[], members:[], checklist:[] }');
-          }
-          if (!confirm('This will replace current data. Continue?')) return;
-          items = d.items;
-          members = d.members;
-          checklist = d.checklist.map(c => ({
+          if (!Array.isArray(d.members) || !Array.isArray(d.items)) return alert('Invalid file format. Expect { members:[], items:[] }');
+          if (!confirm('This will replace current members and items. Continue?')) return;
+          members = Array.from(new Set(d.members));
+          items = d.items.map(c => ({
             id: c.id || uid(),
+            name: c.name || '',
+            qty: c.qty === undefined ? null : (c.qty === '' ? null : c.qty),
             member: c.member || 'Common',
-            item: c.item || '',
-            qty: Number(c.qty) || 1,
-            done: !!c.done
-          })).filter(c => c.member && c.item);
+            done: !!c.done,
+            createdAt: c.createdAt || Date.now()
+          })).filter(c => c.name && c.member);
           save(); renderAll();
           alert('Restore complete.');
         } catch (err) { alert('Failed to parse file: ' + err.message); }
@@ -520,25 +597,24 @@
     });
 
     clearAllBtn.addEventListener('click', () => {
-      if (!confirm('Clear ALL data (items, members, checklist)?')) return;
-      items = []; members = []; checklist = [];
+      if (!confirm('Clear ALL data (members and items)?')) return;
+      members = []; items = [];
       save(); renderAll();
     });
 
-    // Helpers
+    // helpers & init
     function renderAll() {
       ensureDefaults();
-      renderItems();
-      renderMembers();
-      renderSelects();
-      renderGroupedChecklist();
+      renderMemberSelect();
+      renderItemsTable();
+      renderMembersTable();
+      renderChecklist();
     }
-
-    // Init
     function init() {
       load();
       ensureDefaults();
       renderAll();
+      // show items panel by default
       panels.forEach(p => p.style.display = p.id === 'items' ? '' : 'none');
     }
     init();
