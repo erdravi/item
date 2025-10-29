@@ -3,102 +3,79 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Packing Tracker — macOS style</title>
+<title>Packing Tracker — macOS style (Checklist full names)</title>
 <style>
-  /* ---------- Variables ---------- */
   :root{
     --bg: #f3f5f7;
     --surface:#ffffff;
     --muted:#6b7280;
     --text:#0b1724;
-    --primary:#007aff; /* macOS blue */
+    --primary:#007aff;
     --accent:#60a5fa;
     --success:#16a34a;
     --danger:#d32f2f;
     --radius:12px;
   }
-
-  /* ---------- Reset & Layout ---------- */
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter, "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden}
+  html,body{height:100%;margin:0;font-family:Inter, "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
   .wrap{max-width:1100px;margin:16px auto;padding:0 16px}
 
-  /* ---------- Header & Nav ---------- */
   header{background:var(--surface);border-radius:14px;padding:14px 18px;box-shadow:0 6px 18px rgba(2,6,23,0.06);position:sticky;top:12px;z-index:40}
   header .title{display:flex;align-items:center;gap:12px;justify-content:space-between}
   header h1{margin:0;font-size:18px;font-weight:700}
   nav{display:flex;gap:8px;margin-top:12px}
-  .tab-btn{flex:0 0 auto;padding:8px 12px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-weight:600;cursor:pointer;transition:all 200ms}
+  .tab-btn{flex:0 0 auto;padding:8px 12px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-weight:600;cursor:pointer;transition:all .18s}
   .tab-btn.active{background:linear-gradient(180deg, rgba(0,122,255,0.06), rgba(0,122,255,0.02)); color:var(--primary); box-shadow:0 4px 10px rgba(2,6,23,0.04)}
   .tab-btn:focus{outline:2px solid rgba(0,122,255,0.12);outline-offset:2px}
 
-  /* ---------- Main layout ---------- */
   main{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}
   .card{background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   label{font-size:13px;color:var(--muted)}
-  input[type="text"], select{
-    padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:140px;font-size:14px;transition:box-shadow .18s,border-color .18s;
-  }
-  input[type="text"]:focus, select:focus{
-    border-color:var(--primary);
-    box-shadow:0 6px 20px rgba(0,122,255,0.12);
-    outline:none;
-  }
-  input[type="number"]{padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:90px;font-size:14px}
+  input[type="text"], select{padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:140px;font-size:14px;transition:box-shadow .18s,border-color .18s}
+  input[type="text"]:focus, select:focus{border-color:var(--primary);box-shadow:0 6px 20px rgba(0,122,255,0.12);outline:none}
+  input[type="number"], input.qty{padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:90px;font-size:14px}
   input::placeholder{color:#cbd5e1}
 
-  /* ---------- Buttons ---------- */
-  button.primary{
-    background:linear-gradient(180deg,var(--primary),var(--accent));
-    color:white;border:0;padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer;transition:transform .08s,box-shadow .12s;
-  }
+  button.primary{background:linear-gradient(180deg,var(--primary),var(--accent));color:white;border:0;padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer;transition:transform .08s,box-shadow .12s}
   button.primary:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(2,6,23,0.06)}
   button.ghost{background:transparent;border:1px solid #e6e9ee;padding:8px 10px;border-radius:10px;color:var(--primary);cursor:pointer}
   button.small{padding:6px 8px;font-size:13px}
   .icon-btn{background:transparent;border:0;cursor:pointer;font-size:15px;padding:6px;border-radius:8px}
   .icon-btn:hover{background:rgba(2,6,23,0.03)}
 
-  /* ---------- Tables / lists ---------- */
   table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
   th,td{padding:10px 8px;border-bottom:1px solid rgba(2,6,23,0.04);vertical-align:middle;text-align:left}
   td.actions{white-space:nowrap}
+
   .qty-pill{background:rgba(0,122,255,0.06);padding:4px 8px;border-radius:999px;color:var(--primary);font-weight:700;font-size:13px}
 
-  /* ---------- Checklist blocks ---------- */
   .member-block{margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,252,255,0.98));box-shadow:0 6px 18px rgba(2,6,23,0.03)}
   .member-title{font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
   .member-items{margin-left:6px}
-  .chk-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(2,6,23,0.03);flex-wrap:wrap}
-  .chk-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden}
-  .item-viewport{position:relative;overflow:hidden;min-width:0;max-width:60%}
-  .item-name{white-space:nowrap;display:inline-block;transform:translateX(0);transition:transform .16s linear;padding-right:8px;font-weight:600}
-  .item-name.truncate{overflow:hidden;text-overflow:ellipsis}
-  .item-edges{position:absolute;inset:0;pointer-events:none}
-  .fade-left,.fade-right{position:absolute;top:0;bottom:0;width:36px}
-  .fade-left{left:0;background:linear-gradient(90deg,rgba(243,245,247,1),rgba(243,245,247,0))}
-  .fade-right{right:0;background:linear-gradient(270deg,rgba(243,245,247,1),rgba(243,245,247,0))}
 
-  /* ---------- Progress ---------- */
+  /* NEW: checklist item layout with full name on first line and qty+actions on second line */
+  .chk-item{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-bottom:1px dashed rgba(2,6,23,0.03)}
+  .chk-top{display:block;font-weight:700;color:var(--text);font-size:15px;line-height:1.2;word-break:break-word}
+  .chk-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .chk-bottom .left{display:flex;align-items:center;gap:8px}
+  .chk-bottom .right{display:flex;gap:8px;align-items:center}
+  .chk-bottom .right .icon-btn{padding:6px 8px;border-radius:8px;background:transparent;border:1px solid transparent}
+  .chk-bottom .right .icon-btn:hover{background:rgba(2,6,23,0.03)}
+
   .progress-container{margin-top:12px;border-radius:999px;background:rgba(2,6,23,0.04);height:26px;position:relative;overflow:hidden}
   .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;transition:width .6s ease, background .4s}
   .progress-text{font-size:13px;color:rgba(255,255,255,0.95);padding:0 8px}
 
-  /* ---------- Toast & Modal ---------- */
+  .small{font-size:13px;color:var(--muted)}
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:var(--success);color:white;padding:10px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.12);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
   .toast.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
   .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
   .modal-backdrop.show{opacity:1;pointer-events:auto}
   .modal{background:var(--surface);padding:18px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 14px 40px rgba(2,6,23,0.12)}
 
-  /* ---------- Small / Responsive ---------- */
-  .small{font-size:13px;color:var(--muted)}
   @media (min-width:920px){ main{grid-template-columns:1fr 420px} .wide{grid-column:1 / -1} }
-  @media (max-width:520px){
-    .item-viewport{max-width:55%}
-    input[type="text"],select{min-width:120px}
-    .tab-btn{padding:8px 10px}
-  }
+  @media (max-width:520px){ input[type="text"],select{min-width:120px} .tab-btn{padding:8px 10px} }
 </style>
 </head>
 <body>
@@ -107,9 +84,9 @@
       <div class="title">
         <div>
           <h1>Packing Tracker</h1>
- 
+
         </div>
-  
+
       </div>
 
       <nav role="tablist" aria-label="Main tabs" style="margin-top:12px">
@@ -144,7 +121,7 @@
 
           <div>
             <label for="itemQty">Qty (optional)</label>
-            <input id="itemQty" type="text" placeholder="e.g., 2 / 500 g" />
+            <input id="itemQty" type="text" class="qty" placeholder="e.g., 2 / 500 g" />
           </div>
 
           <div style="align-self:flex-end">
@@ -190,7 +167,6 @@
             <div class="small">Packed items strike & fade</div>
           </div>
 
-          <!-- progress container -->
           <div class="progress-container" style="margin-top:12px;">
             <div id="progressBar" class="progress-bar" style="width:0%">
               <span id="progressText" class="progress-text">0% Packed</span>
@@ -243,10 +219,8 @@
     </main>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- Modal -->
   <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <h4 id="modalTitle" style="margin:0 0 8px 0">Confirm</h4>
@@ -259,7 +233,7 @@
   </div>
 
 <script>
-/* ---------- Keys & Elements ---------- */
+/* Keys & Elements */
 const KEY_MEM = 'pt_members_macos_v1';
 const KEY_ITEMS = 'pt_items_macos_v1';
 
@@ -297,20 +271,20 @@ const modalMsg = document.getElementById('modalMsg');
 const modalOk = document.getElementById('modalOk');
 const modalCancel = document.getElementById('modalCancel');
 
-/* ---------- Data ---------- */
+/* Data */
 let members = [];
 let items = []; // { id, name, qty|null, member, done, createdAt }
 let showOnlyPending = false;
 const tintClasses = ['tint-0','tint-1','tint-2','tint-3','tint-4'];
 
-/* ---------- Utils ---------- */
+/* Utils */
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
 function save(){ localStorage.setItem(KEY_MEM, JSON.stringify(members)); localStorage.setItem(KEY_ITEMS, JSON.stringify(items)); }
 function load(){ members = JSON.parse(localStorage.getItem(KEY_MEM) || 'null') || []; items = JSON.parse(localStorage.getItem(KEY_ITEMS) || 'null') || []; }
 
-/* ---------- Toast ---------- */
+/* Toast */
 let toastTimer = null;
 function showToast(msg){
   toast.textContent = msg;
@@ -319,7 +293,7 @@ function showToast(msg){
   toastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 1800);
 }
 
-/* ---------- Modal Confirm (Promise) ---------- */
+/* Modal Confirm (Promise) */
 function showConfirm(message, okText='Delete'){
   return new Promise(resolve => {
     modalMsg.textContent = message;
@@ -340,32 +314,30 @@ function showConfirm(message, okText='Delete'){
   });
 }
 
-/* ---------- Tabs ---------- */
+/* Tabs */
 tabs.forEach(btn => {
   btn.addEventListener('click', () => {
     tabs.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
     btn.classList.add('active'); btn.setAttribute('aria-selected','true');
     const t = btn.dataset.tab;
     panels.forEach(p => p.style.display = p.id === t ? '' : 'none');
-    // gentle fade handled by CSS animation on .tab
     if (t === 'items') renderItemsTable();
     if (t === 'checklist') renderChecklist();
     if (t === 'members') renderMembersTable();
   });
 });
 
-/* ---------- Defaults ---------- */
+/* Defaults */
 function ensureDefaults(){
   const def = ['Common','Ravikumar','Divya','Sarnith','Nethra'];
   if (!members || members.length === 0) members = [...def];
   members = Array.from(new Set(members));
-  // ensure Common is first
   members = members.filter(m => m !== 'Common');
   members.unshift('Common');
   save();
 }
 
-/* ---------- Member Select ---------- */
+/* Member Select */
 function renderMemberSelect(){
   const prev = selectMember.value;
   selectMember.innerHTML = '';
@@ -375,7 +347,7 @@ function renderMemberSelect(){
   if (members.includes(prev)) selectMember.value = prev;
 }
 
-/* ---------- Items Master Table ---------- */
+/* Items Master Table */
 function renderItemsTable(){
   itemsTableBody.innerHTML = '';
   items.forEach(it => {
@@ -392,7 +364,6 @@ function renderItemsTable(){
   });
   itemCount.textContent = items.length;
 
-  // delete listeners
   itemsTableBody.querySelectorAll('button[title="Delete"]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
@@ -404,7 +375,6 @@ function renderItemsTable(){
     });
   });
 
-  // edit listeners
   itemsTableBody.querySelectorAll('.edit-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
@@ -427,7 +397,7 @@ function renderItemsTable(){
   });
 }
 
-/* ---------- Add Item ---------- */
+/* Add Item */
 addItemBtn.addEventListener('click', () => {
   const member = selectMember.value;
   const name = (itemName.value || '').trim();
@@ -436,7 +406,6 @@ addItemBtn.addEventListener('click', () => {
   if (!member) return alert('Select a member.');
   if (!name) return alert('Enter an item name.');
   items.push({ id: uid(), name, qty, member, done: false, createdAt: Date.now() });
-  // reset inputs
   itemName.value = '';
   itemQty.value = '';
   if (selectMember.options.length) selectMember.selectedIndex = 0;
@@ -445,7 +414,7 @@ addItemBtn.addEventListener('click', () => {
 });
 itemName.addEventListener('keydown', e => { if (e.key === 'Enter') addItemBtn.click(); });
 
-/* ---------- Checklist Rendering ---------- */
+/* Checklist Rendering */
 function renderChecklist(){
   groupedChecklist.innerHTML = '';
   if (!items.length) {
@@ -454,7 +423,6 @@ function renderChecklist(){
     return;
   }
 
-  // group by members order
   const grouped = {};
   members.forEach(m => grouped[m] = []);
   items.forEach(it => {
@@ -462,7 +430,6 @@ function renderChecklist(){
     grouped[it.member].push(it);
   });
 
-  // sort groups
   const mode = sortMode.value || 'created';
   for (const k in grouped) {
     if (mode === 'name') grouped[k].sort((a,b) => a.name.localeCompare(b.name));
@@ -478,8 +445,6 @@ function renderChecklist(){
     totalPacked += packed.length;
     totalItems += arr.length;
     const arrToShow = showOnlyPending ? pending : [...pending, ...packed];
-
-    // skip if nothing to show (when showOnlyPending)
     if (arrToShow.length === 0 && showOnlyPending) return;
 
     const block = document.createElement('div');
@@ -494,20 +459,44 @@ function renderChecklist(){
 
     arrToShow.forEach(c => {
       const row = document.createElement('div'); row.className = 'chk-item';
+
+      // top: full name (wraps)
+      const top = document.createElement('div');
+      top.className = 'chk-top';
+      top.textContent = c.name;
+      if (c.done) top.style.textDecoration = 'line-through';
+
+      // bottom: qty left, edit & delete right
+      const bottom = document.createElement('div');
+      bottom.className = 'chk-bottom';
+      const left = document.createElement('div'); left.className = 'left';
       const qtyText = (c.qty == null || c.qty === '') ? '' : `<span class="qty-pill">${esc(c.qty)}</span>`;
-      row.innerHTML = `
-        <div class="chk-left" role="group" aria-label="${esc(c.name)}">
-          <input type="checkbox" class="chkbox" data-id="${c.id}" ${c.done ? 'checked' : ''} aria-checked="${c.done ? 'true':'false'}" />
-          <div class="item-viewport">
-            <div class="item-name truncate" title="${esc(c.name)}">${esc(c.name)}</div>
-            <div class="item-edges"><div class="fade-left"></div><div class="fade-right"></div></div>
-          </div>
-          ${qtyText}
-        </div>
-        <div style="white-space:nowrap;flex:0 0 auto">
-          <button class="icon-btn edit-item" data-id="${c.id}" title="Edit">✏️</button>
-          <button class="icon-btn" data-id="${c.id}" title="Delete" style="color:var(--danger)">🗑️</button>
-        </div>`;
+      left.innerHTML = `${qtyText}`;
+
+      const right = document.createElement('div'); right.className = 'right';
+      right.innerHTML = `<button class="icon-btn edit-item small" data-id="${c.id}" title="Edit">✏️</button>
+                         <button class="icon-btn delete-item small" data-id="${c.id}" title="Delete" style="color:var(--danger)">🗑️</button>`;
+
+      bottom.appendChild(left);
+      bottom.appendChild(right);
+
+      // checkbox and left alignment: show checkbox left of top line
+      const wrapperTop = document.createElement('div');
+      wrapperTop.style.display = 'flex';
+      wrapperTop.style.gap = '10px';
+      wrapperTop.style.alignItems = 'flex-start';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'chkbox';
+      cb.dataset.id = c.id;
+      if (c.done) cb.checked = true;
+
+      wrapperTop.appendChild(cb);
+      wrapperTop.appendChild(top);
+
+      row.appendChild(wrapperTop);
+      row.appendChild(bottom);
       list.appendChild(row);
     });
 
@@ -524,13 +513,12 @@ function renderChecklist(){
       it.done = cb.checked;
       save();
       updateProgressBar();
-      // re-render to keep pending above packed
       renderChecklist();
       renderItemsTable();
     });
   });
 
-  groupedChecklist.querySelectorAll('button[title="Delete"]').forEach(btn => {
+  groupedChecklist.querySelectorAll('.delete-item').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
       const confirmed = await showConfirm('Delete this item from Master List?', 'Delete');
@@ -560,90 +548,21 @@ function renderChecklist(){
     });
   });
 
-  // attach hover/touch ticker handlers for item names
-  attachTickerHandlers(groupedChecklist);
-
   updateProgressBar();
 }
 
-/* ---------- Ticker handlers (hover/tap to scroll) ---------- */
-function attachTickerHandlers(container){
-  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-  container.querySelectorAll('.item-viewport').forEach(vp => {
-    const nameEl = vp.querySelector('.item-name');
-    if (!nameEl) return;
-    nameEl.classList.add('truncate');
-    // add fades already in DOM
-    if (!isTouch) {
-      vp.addEventListener('mouseenter', () => startTicker(vp,nameEl));
-      vp.addEventListener('mouseleave', () => stopTicker(vp,nameEl));
-    } else {
-      vp.addEventListener('click', (e) => {
-        // toggle on tap
-        if (nameEl.dataset.running === '1') stopTicker(vp,nameEl); else startTicker(vp,nameEl);
-      });
-    }
-  });
-}
-const tickerState = new WeakMap();
-function startTicker(viewport, nameEl){
-  const key = nameEl;
-  // if already running, do nothing
-  const st = tickerState.get(key);
-  if (st && st.running) return;
-  const vw = viewport.clientWidth;
-  const sw = nameEl.scrollWidth;
-  const diff = sw - vw;
-  if (diff <= 2) return;
-  const speed = 48; // px/s
-  const duration = Math.max(4, diff / speed);
-  let start = null;
-  function frame(ts){
-    if (!start) start = ts;
-    const elapsed = (ts - start) / 1000;
-    const progress = Math.min(1, elapsed / duration);
-    const x = -diff * progress;
-    nameEl.style.transform = `translateX(${x}px)`;
-    if (progress < 1) {
-      const id = requestAnimationFrame(frame);
-      tickerState.set(key, { raf:id, running:true });
-    } else {
-      // pause at end, reset and loop
-      setTimeout(()=> {
-        nameEl.style.transform = `translateX(0)`;
-        // small pause then restart
-        setTimeout(()=> { start = null; const id = requestAnimationFrame(frame); tickerState.set(key,{raf:id, running:true}); }, 300);
-      }, 600);
-    }
-  }
-  const id = requestAnimationFrame(frame);
-  tickerState.set(key, { raf:id, running:true });
-  nameEl.dataset.running = '1';
-}
-function stopTicker(viewport, nameEl){
-  const key = nameEl;
-  const st = tickerState.get(key);
-  if (st && st.raf) cancelAnimationFrame(st.raf);
-  nameEl.style.transform = 'translateX(0)';
-  tickerState.set(key, { raf:null, running:false });
-  nameEl.dataset.running = '0';
-}
-
-/* ---------- Progress ---------- */
+/* Progress */
 function updateProgressBar(){
   const total = items.length;
   const packed = items.filter(x => x.done).length;
   const pct = total === 0 ? 0 : Math.round((packed / total) * 100);
   progressBar.style.width = pct + '%';
   progressText.textContent = `${pct}% Packed`;
-  if (pct === 100 && total > 0) {
-    progressBar.style.background = `linear-gradient(90deg, var(--success), var(--accent))`;
-  } else {
-    progressBar.style.background = `linear-gradient(90deg, var(--primary), var(--accent))`;
-  }
+  if (pct === 100 && total > 0) progressBar.style.background = `linear-gradient(90deg, var(--success), var(--accent))`;
+  else progressBar.style.background = `linear-gradient(90deg, var(--primary), var(--accent))`;
 }
 
-/* ---------- Controls ---------- */
+/* Controls */
 showOnlyPendingBtn.addEventListener('click', () => {
   showOnlyPending = !showOnlyPending;
   showOnlyPendingBtn.textContent = showOnlyPending ? 'Show All' : 'Show Only Pending';
@@ -660,7 +579,7 @@ clearPackedBtn.addEventListener('click', async () => {
   showToast('Packed items removed');
 });
 
-/* ---------- Members ---------- */
+/* Members */
 function renderMembersTable(){
   membersTableBody.innerHTML = '';
   members.forEach((m, idx) => {
@@ -721,7 +640,7 @@ addMemberBtn.addEventListener('click', () => {
 });
 memberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMemberBtn.click(); });
 
-/* ---------- Backup & Restore ---------- */
+/* Backup & Restore */
 exportBtn.addEventListener('click', () => {
   const data = { members, items, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -756,7 +675,7 @@ importBtn.addEventListener('click', () => {
         createdAt: c.createdAt || Date.now()
       })).filter(c => c.name && c.member);
       save(); renderAll();
-      fileInput.value = ''; // reset file input
+      fileInput.value = '';
       showToast('Restore complete');
     } catch (err) { alert('Failed to parse file: ' + err.message); }
   };
@@ -771,7 +690,7 @@ clearAllBtn.addEventListener('click', async () => {
   showToast('All data cleared');
 });
 
-/* ---------- Render All ---------- */
+/* Render All */
 function renderAll(){
   ensureDefaults();
   renderMemberSelect();
@@ -781,12 +700,11 @@ function renderAll(){
   updateProgressBar();
 }
 
-/* ---------- Init ---------- */
+/* Init */
 function init(){
   load();
   ensureDefaults();
   renderAll();
-  // show items panel default
   panels.forEach(p => p.style.display = p.id === 'items' ? '' : 'none');
 }
 init();
