@@ -3,158 +3,164 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Packing Tracker — Final</title>
+<title>Packing Tracker — macOS style</title>
 <style>
+  /* ---------- Variables ---------- */
   :root{
-    --bg:#f4f8ff;
-    --card:#ffffff;
-    --primary:#1976d2;
-    --accent:#4fb3ff;
+    --bg: #f3f5f7;
+    --surface:#ffffff;
     --muted:#6b7280;
     --text:#0b1724;
+    --primary:#007aff; /* macOS blue */
+    --accent:#60a5fa;
     --success:#16a34a;
     --danger:#d32f2f;
     --radius:12px;
-    --shadow-sm: 0 6px 18px rgba(11,23,36,0.06);
-    --shadow-lg: 0 14px 36px rgba(11,23,36,0.08);
   }
+
+  /* ---------- Reset & Layout ---------- */
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-  .container{max-width:1100px;margin:18px auto;padding:0 16px}
-  header{
-    background:linear-gradient(90deg,var(--primary),var(--accent));
-    color:white;padding:18px;border-bottom-left-radius:16px;border-bottom-right-radius:16px;position:sticky;top:0;z-index:40;
-    box-shadow:0 8px 30px rgba(25,118,210,0.08);
-  }
-  header .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  header h1{margin:0;font-weight:700;font-size:18px}
-  header .subtitle{font-size:13px;opacity:0.95}
-  .tabs{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-  .tab-btn{
-    background:transparent;border:0;padding:10px 14px;border-radius:10px;color:rgba(255,255,255,0.95);font-weight:600;cursor:pointer;position:relative;
-  }
-  .tab-btn::after{content:"";position:absolute;left:12px;right:12px;bottom:-8px;height:3px;border-radius:6px;opacity:0;transform:translateY(6px);transition:all 220ms}
-  .tab-btn.active::after{opacity:1;background:linear-gradient(90deg,rgba(255,255,255,0.18),rgba(255,255,255,0.08));transform:translateY(0)}
-  main{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px}
-  .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow-sm);transition:box-shadow 180ms}
-  .card:hover{box-shadow:var(--shadow-lg)}
+  html,body{height:100%;margin:0;font-family:Inter, "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden}
+  .wrap{max-width:1100px;margin:16px auto;padding:0 16px}
+
+  /* ---------- Header & Nav ---------- */
+  header{background:var(--surface);border-radius:14px;padding:14px 18px;box-shadow:0 6px 18px rgba(2,6,23,0.06);position:sticky;top:12px;z-index:40}
+  header .title{display:flex;align-items:center;gap:12px;justify-content:space-between}
+  header h1{margin:0;font-size:18px;font-weight:700}
+  nav{display:flex;gap:8px;margin-top:12px}
+  .tab-btn{flex:0 0 auto;padding:8px 12px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-weight:600;cursor:pointer;transition:all 200ms}
+  .tab-btn.active{background:linear-gradient(180deg, rgba(0,122,255,0.06), rgba(0,122,255,0.02)); color:var(--primary); box-shadow:0 4px 10px rgba(2,6,23,0.04)}
+  .tab-btn:focus{outline:2px solid rgba(0,122,255,0.12);outline-offset:2px}
+
+  /* ---------- Main layout ---------- */
+  main{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}
+  .card{background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  label{font-size:13px;color:var(--muted);display:block}
-  input[type="text"], select, input[type="number"], .muted-input{
-    padding:10px;border-radius:10px;border:1px solid rgba(11,23,36,0.06);min-width:150px;background:transparent;outline:none;
+  label{font-size:13px;color:var(--muted)}
+  input[type="text"], select{
+    padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:140px;font-size:14px;transition:box-shadow .18s,border-color .18s;
   }
-  input::placeholder{color:#c9d6ea}
-  button{padding:10px 12px;border-radius:10px;border:0;background:var(--primary);color:white;font-weight:700;cursor:pointer}
-  .muted-btn{border:1px solid rgba(11,23,36,0.06);background:transparent;color:var(--primary);padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer}
-  .danger{color:var(--danger)}
-  .small{font-size:13px;color:var(--muted)}
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(11,23,36,0.04);font-size:14px;vertical-align:middle}
-  td.actions{text-align:right;white-space:nowrap}
-  .member-block{margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,252,255,0.99));box-shadow:0 6px 18px rgba(11,23,36,0.03)}
+  input[type="text"]:focus, select:focus{
+    border-color:var(--primary);
+    box-shadow:0 6px 20px rgba(0,122,255,0.12);
+    outline:none;
+  }
+  input[type="number"]{padding:9px 10px;border-radius:10px;border:1px solid #e6e9ee;background:white;min-width:90px;font-size:14px}
+  input::placeholder{color:#cbd5e1}
+
+  /* ---------- Buttons ---------- */
+  button.primary{
+    background:linear-gradient(180deg,var(--primary),var(--accent));
+    color:white;border:0;padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer;transition:transform .08s,box-shadow .12s;
+  }
+  button.primary:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(2,6,23,0.06)}
+  button.ghost{background:transparent;border:1px solid #e6e9ee;padding:8px 10px;border-radius:10px;color:var(--primary);cursor:pointer}
+  button.small{padding:6px 8px;font-size:13px}
+  .icon-btn{background:transparent;border:0;cursor:pointer;font-size:15px;padding:6px;border-radius:8px}
+  .icon-btn:hover{background:rgba(2,6,23,0.03)}
+
+  /* ---------- Tables / lists ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+  th,td{padding:10px 8px;border-bottom:1px solid rgba(2,6,23,0.04);vertical-align:middle;text-align:left}
+  td.actions{white-space:nowrap}
+  .qty-pill{background:rgba(0,122,255,0.06);padding:4px 8px;border-radius:999px;color:var(--primary);font-weight:700;font-size:13px}
+
+  /* ---------- Checklist blocks ---------- */
+  .member-block{margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,252,255,0.98));box-shadow:0 6px 18px rgba(2,6,23,0.03)}
   .member-title{font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
   .member-items{margin-left:6px}
-  .chk-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(11,23,36,0.03);align-items:center;flex-wrap:wrap}
-  .qty-pill{background:rgba(25,118,210,0.06);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--primary);font-weight:700}
-  input:focus, select:focus, button:focus{box-shadow:0 6px 20px rgba(25,118,210,0.08)}
-  .muted-ghost{background:transparent;border:1px solid rgba(11,23,36,0.04);padding:8px 10px;border-radius:10px}
-  .hidden{display:none!important}
-  .wrap{word-break:break-word;overflow-wrap:break-word}
-  @media(min-width:920px){
-    main{grid-template-columns:1fr 420px}
-    .wide{grid-column:1 / -1}
-  }
-  @media(max-width:520px){
-    .tab-btn{padding:8px 10px;font-size:14px}
-    input[type="text"], select{min-width:120px}
-  }
+  .chk-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(2,6,23,0.03);flex-wrap:wrap}
+  .chk-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden}
+  .item-viewport{position:relative;overflow:hidden;min-width:0;max-width:60%}
+  .item-name{white-space:nowrap;display:inline-block;transform:translateX(0);transition:transform .16s linear;padding-right:8px;font-weight:600}
+  .item-name.truncate{overflow:hidden;text-overflow:ellipsis}
+  .item-edges{position:absolute;inset:0;pointer-events:none}
+  .fade-left,.fade-right{position:absolute;top:0;bottom:0;width:36px}
+  .fade-left{left:0;background:linear-gradient(90deg,rgba(243,245,247,1),rgba(243,245,247,0))}
+  .fade-right{right:0;background:linear-gradient(270deg,rgba(243,245,247,1),rgba(243,245,247,0))}
 
-  /* Progress bar (Checklist only) */
-  .progress-container{margin-top:10px;border-radius:999px;background:rgba(11,23,36,0.04);height:20px;position:relative;overflow:hidden}
-  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;transition:width 300ms ease, background 300ms}
-  .progress-text{font-size:13px;color:rgba(255,255,255,0.95);padding:0 6px}
+  /* ---------- Progress ---------- */
+  .progress-container{margin-top:12px;border-radius:999px;background:rgba(2,6,23,0.04);height:26px;position:relative;overflow:hidden}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;transition:width .6s ease, background .4s}
+  .progress-text{font-size:13px;color:rgba(255,255,255,0.95);padding:0 8px}
 
-  /* Member tint colors - light tints */
-  .tint-0{background:linear-gradient(180deg,rgba(79,179,255,0.08),rgba(255,255,255,0.9))}
-  .tint-1{background:linear-gradient(180deg,rgba(99,255,178,0.08),rgba(255,255,255,0.9))}
-  .tint-2{background:linear-gradient(180deg,rgba(255,209,102,0.08),rgba(255,255,255,0.9))}
-  .tint-3{background:linear-gradient(180deg,rgba(255,179,214,0.08),rgba(255,255,255,0.9))}
-  .tint-4{background:linear-gradient(180deg,rgba(224,224,224,0.06),rgba(255,255,255,0.9))}
-
-  /* Toast */
-  .toast{
-    position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--success);color:white;padding:10px 14px;border-radius:12px;box-shadow:0 8px 30px rgba(6,95,70,0.12);z-index:60;opacity:0;pointer-events:none;transition:opacity 220ms, transform 220ms;
-  }
+  /* ---------- Toast & Modal ---------- */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:var(--success);color:white;padding:10px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.12);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
   .toast.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
-  /* Modal */
-  .modal-backdrop{position:fixed;inset:0;background:rgba(3,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none;transition:opacity 180ms}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
   .modal-backdrop.show{opacity:1;pointer-events:auto}
-  .modal{background:var(--card);padding:18px;border-radius:12px;max-width:420px;width:100%;box-shadow:var(--shadow-lg)}
-  .modal h4{margin:0 0 8px 0}
-  .modal p{margin:0 0 12px 0;color:var(--muted)}
-  .modal .actions{display:flex;gap:8px;justify-content:flex-end}
+  .modal{background:var(--surface);padding:18px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 14px 40px rgba(2,6,23,0.12)}
+
+  /* ---------- Small / Responsive ---------- */
+  .small{font-size:13px;color:var(--muted)}
+  @media (min-width:920px){ main{grid-template-columns:1fr 420px} .wide{grid-column:1 / -1} }
+  @media (max-width:520px){
+    .item-viewport{max-width:55%}
+    input[type="text"],select{min-width:120px}
+    .tab-btn{padding:8px 10px}
+  }
 </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="top">
+  <div class="wrap">
+    <header>
+      <div class="title">
         <div>
           <h1>Packing Tracker</h1>
+ 
         </div>
+  
       </div>
 
-      <div class="tabs" role="tablist" aria-label="Main tabs" style="margin-top:14px">
+      <nav role="tablist" aria-label="Main tabs" style="margin-top:12px">
         <button class="tab-btn active" data-tab="items" role="tab" aria-selected="true">Items</button>
         <button class="tab-btn" data-tab="checklist" role="tab">Checklist</button>
         <button class="tab-btn" data-tab="members" role="tab">Members</button>
         <button class="tab-btn" data-tab="backup" role="tab">Backup</button>
-      </div>
-    </div>
-  </header>
+      </nav>
+    </header>
 
-  <div class="container">
     <main>
       <!-- ITEMS -->
-      <section id="items" class="card tab-panel wide">
+      <section id="items" class="card tab-panel wide" role="tabpanel">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div>
             <h3 style="margin:0 0 6px 0">Items — Master</h3>
-            <div class="small">Add item name (required), optional quantity, and assign to a member.</div>
+            <div class="small">Add item name, choose member, optionally set quantity.</div>
           </div>
           <div class="small">Members managed in Members tab</div>
         </div>
 
         <div class="row" style="margin-top:12px;align-items:end">
-          <div>
-            <label for="selectMember">Member</label>
-            <select id="selectMember"></select>
-          </div>
-
           <div style="flex:1;min-width:160px">
             <label for="itemName">Item</label>
             <input id="itemName" type="text" placeholder="e.g., Towel" />
           </div>
 
-          <div style="min-width:120px">
+          <div>
+            <label for="selectMember">Member</label>
+            <select id="selectMember" aria-label="Select member"></select>
+          </div>
+
+          <div>
             <label for="itemQty">Qty (optional)</label>
-            <input id="itemQty" type="number" min="1" placeholder="" />
+            <input id="itemQty" type="text" placeholder="e.g., 2 / 500 g" />
           </div>
 
           <div style="align-self:flex-end">
-            <button id="addItemBtn">Add Item</button>
+            <button id="addItemBtn" class="primary">Add Item</button>
           </div>
         </div>
 
         <div class="row" style="margin-top:12px;align-items:center">
-          <div class="small">Input resets on success; toast will appear.</div>
+          <div class="small">Inputs reset on success; toast appears</div>
           <div style="margin-left:auto" class="small">Total items: <strong id="itemCount">0</strong></div>
         </div>
 
         <label style="margin-top:12px">Items (Master)</label>
         <div style="overflow:auto">
           <table aria-live="polite">
-            <thead><tr><th>Item</th><th style="width:90px">Qty</th><th style="width:170px">Member</th><th style="width:160px" class="actions">Actions</th></tr></thead>
+            <thead><tr><th>Item</th><th style="width:110px">Qty</th><th style="width:180px">Member</th><th style="width:160px" class="actions">Actions</th></tr></thead>
             <tbody id="itemsTableBody"></tbody>
           </table>
         </div>
@@ -167,21 +173,21 @@
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
               <h4 style="margin:0 0 6px 0">Checklist</h4>
-              <div class="small">Grouped by member. Packed items appear at bottom of each group.</div>
+              <div class="small">Grouped by member. Pending items shown above packed ones.</div>
             </div>
-            <div class="small">Common shown first</div>
+            <div class="small">Common appears first</div>
           </div>
 
           <div class="row" style="margin-top:10px;align-items:center;justify-content:space-between">
             <div style="display:flex;gap:8px;align-items:center">
-              <button id="showOnlyPendingBtn" class="muted-btn">Show Only Pending</button>
-              <select id="sortMode" class="muted-btn" style="padding:9px;border-radius:10px">
-                <option value="added">Sort: Added order</option>
+              <button id="showOnlyPendingBtn" class="ghost small">Show Only Pending</button>
+              <select id="sortMode" class="ghost small" style="padding:8px;border-radius:10px">
+                <option value="created">Sort: Added</option>
                 <option value="name">Sort: Name (A → Z)</option>
               </select>
-              <button id="clearPackedBtn" class="muted-btn">Clear Packed (delete)</button>
+              <button id="clearPackedBtn" class="ghost small" style="border-color:rgba(211,47,47,0.12);color:var(--danger)">Clear Packed</button>
             </div>
-            <div class="small">Packed items fade & strike</div>
+            <div class="small">Packed items strike & fade</div>
           </div>
 
           <!-- progress container -->
@@ -199,14 +205,14 @@
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
               <h4 style="margin:0 0 6px 0">Members</h4>
-              <div class="small">Add, rename, or delete members. Common cannot be deleted.</div>
+              <div class="small">Add, rename, or delete members. 'Common' is reserved.</div>
             </div>
             <div class="small">Total: <strong id="memberCount">0</strong></div>
           </div>
 
           <div class="row" style="margin-top:8px">
-            <input id="memberInput" type="text" placeholder="Add member (e.g., Priya)" style="flex:1" />
-            <button id="addMemberBtn">Add Member</button>
+            <input id="memberInput" type="text" placeholder="Add member (e.g., Ravi)" style="flex:1" />
+            <button id="addMemberBtn" class="primary">Add Member</button>
           </div>
 
           <div style="margin-top:12px;overflow:auto">
@@ -223,14 +229,14 @@
           <div class="small">Export / Import full data (members + items). Restore replaces current data.</div>
 
           <div class="row" style="margin-top:10px">
-            <button id="exportBtn">Download Backup (JSON)</button>
-            <button id="exportCompactBtn" class="muted-btn">Compact Backup</button>
+            <button id="exportBtn" class="primary small">Download Backup (JSON)</button>
+            <button id="exportCompactBtn" class="ghost small">Compact Backup</button>
             <input id="fileInput" type="file" accept="application/json" style="margin-left:6px" />
           </div>
 
           <div class="row" style="margin-top:10px;align-items:center">
-            <button id="importBtn" class="muted-btn">Restore from File</button>
-            <button id="clearAllBtn" class="muted-btn danger" style="margin-left:auto">Clear ALL</button>
+            <button id="importBtn" class="ghost small">Restore from File</button>
+            <button id="clearAllBtn" class="ghost small" style="margin-left:auto;color:var(--danger);border-color:rgba(211,47,47,0.12)">Clear ALL</button>
           </div>
         </section>
       </div>
@@ -243,515 +249,547 @@
   <!-- Modal -->
   <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h4 id="modalTitle">Confirm</h4>
-      <p id="modalMsg">Are you sure?</p>
-      <div class="actions" style="margin-top:12px">
-        <button id="modalCancel" class="muted-btn">Cancel</button>
-        <button id="modalOk" class="danger">Delete</button>
+      <h4 id="modalTitle" style="margin:0 0 8px 0">Confirm</h4>
+      <p id="modalMsg" style="margin:0 0 12px;color:var(--muted)">Are you sure?</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button id="modalCancel" class="ghost small">Cancel</button>
+        <button id="modalOk" class="danger small" style="background:var(--danger);color:white;border-radius:8px;padding:8px 12px">Delete</button>
       </div>
     </div>
   </div>
 
 <script>
-  // Keys
-  const KEY_MEM = 'pt_members_final_v2';
-  const KEY_ITEMS = 'pt_items_final_v2';
+/* ---------- Keys & Elements ---------- */
+const KEY_MEM = 'pt_members_macos_v1';
+const KEY_ITEMS = 'pt_items_macos_v1';
 
-  // Elements
-  const tabs = document.querySelectorAll('.tab-btn');
-  const panels = document.querySelectorAll('.tab-panel');
+const tabs = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.tab-panel');
 
-  // Items
-  const selectMember = document.getElementById('selectMember');
-  const itemName = document.getElementById('itemName');
-  const itemQty = document.getElementById('itemQty');
-  const addItemBtn = document.getElementById('addItemBtn');
-  const itemsTableBody = document.getElementById('itemsTableBody');
-  const itemCount = document.getElementById('itemCount');
+const selectMember = document.getElementById('selectMember');
+const itemName = document.getElementById('itemName');
+const itemQty = document.getElementById('itemQty');
+const addItemBtn = document.getElementById('addItemBtn');
+const itemsTableBody = document.getElementById('itemsTableBody');
+const itemCount = document.getElementById('itemCount');
 
-  // Checklist
-  const groupedChecklist = document.getElementById('groupedChecklist');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  const showOnlyPendingBtn = document.getElementById('showOnlyPendingBtn');
-  const sortMode = document.getElementById('sortMode');
-  const clearPackedBtn = document.getElementById('clearPackedBtn');
+const groupedChecklist = document.getElementById('groupedChecklist');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const showOnlyPendingBtn = document.getElementById('showOnlyPendingBtn');
+const sortMode = document.getElementById('sortMode');
+const clearPackedBtn = document.getElementById('clearPackedBtn');
 
-  // Members
-  const memberInput = document.getElementById('memberInput');
-  const addMemberBtn = document.getElementById('addMemberBtn');
-  const membersTableBody = document.getElementById('membersTableBody');
-  const memberCount = document.getElementById('memberCount');
+const memberInput = document.getElementById('memberInput');
+const addMemberBtn = document.getElementById('addMemberBtn');
+const membersTableBody = document.getElementById('membersTableBody');
+const memberCount = document.getElementById('memberCount');
 
-  // Backup
-  const exportBtn = document.getElementById('exportBtn');
-  const exportCompactBtn = document.getElementById('exportCompactBtn');
-  const fileInput = document.getElementById('fileInput');
-  const importBtn = document.getElementById('importBtn');
-  const clearAllBtn = document.getElementById('clearAllBtn');
+const exportBtn = document.getElementById('exportBtn');
+const exportCompactBtn = document.getElementById('exportCompactBtn');
+const fileInput = document.getElementById('fileInput');
+const importBtn = document.getElementById('importBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
 
-  // Toast & Modal
-  const toast = document.getElementById('toast');
-  const modalBackdrop = document.getElementById('modalBackdrop');
-  const modalMsg = document.getElementById('modalMsg');
-  const modalOk = document.getElementById('modalOk');
-  const modalCancel = document.getElementById('modalCancel');
+const toast = document.getElementById('toast');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalMsg = document.getElementById('modalMsg');
+const modalOk = document.getElementById('modalOk');
+const modalCancel = document.getElementById('modalCancel');
 
-  // Data
-  let members = [];
-  let items = []; // { id, name, qty|null, member, done, createdAt }
+/* ---------- Data ---------- */
+let members = [];
+let items = []; // { id, name, qty|null, member, done, createdAt }
+let showOnlyPending = false;
+const tintClasses = ['tint-0','tint-1','tint-2','tint-3','tint-4'];
 
-  // State
-  let showOnlyPending = false;
+/* ---------- Utils ---------- */
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
-  // Member tint classes, cycle through
-  const tintClasses = ['tint-0','tint-1','tint-2','tint-3','tint-4'];
+function save(){ localStorage.setItem(KEY_MEM, JSON.stringify(members)); localStorage.setItem(KEY_ITEMS, JSON.stringify(items)); }
+function load(){ members = JSON.parse(localStorage.getItem(KEY_MEM) || 'null') || []; items = JSON.parse(localStorage.getItem(KEY_ITEMS) || 'null') || []; }
 
-  // Helpers
-  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-  const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 1800);
+}
 
-  function save() {
-    localStorage.setItem(KEY_MEM, JSON.stringify(members));
-    localStorage.setItem(KEY_ITEMS, JSON.stringify(items));
-  }
-  function load() {
-    members = JSON.parse(localStorage.getItem(KEY_MEM) || 'null') || [];
-    items = JSON.parse(localStorage.getItem(KEY_ITEMS) || 'null') || [];
-  }
+/* ---------- Modal Confirm (Promise) ---------- */
+function showConfirm(message, okText='Delete'){
+  return new Promise(resolve => {
+    modalMsg.textContent = message;
+    modalOk.textContent = okText;
+    modalBackdrop.classList.add('show');
+    modalBackdrop.classList.remove('hidden');
+    function cleanup(result){
+      modalBackdrop.classList.remove('show');
+      modalBackdrop.classList.add('hidden');
+      modalOk.removeEventListener('click', onOk);
+      modalCancel.removeEventListener('click', onCancel);
+      resolve(result);
+    }
+    function onOk(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    modalOk.addEventListener('click', onOk);
+    modalCancel.addEventListener('click', onCancel);
+  });
+}
 
-  // Toast
-  let toastTimer = null;
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
-  }
+/* ---------- Tabs ---------- */
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabs.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    const t = btn.dataset.tab;
+    panels.forEach(p => p.style.display = p.id === t ? '' : 'none');
+    // gentle fade handled by CSS animation on .tab
+    if (t === 'items') renderItemsTable();
+    if (t === 'checklist') renderChecklist();
+    if (t === 'members') renderMembersTable();
+  });
+});
 
-  // Modal (custom confirm) returns a Promise<boolean>
-  function showConfirm(message, okText='Delete', okClass='danger') {
-    return new Promise(resolve => {
-      modalMsg.textContent = message;
-      modalOk.textContent = okText;
-      // style ok button
-      modalOk.className = okClass;
-      modalBackdrop.classList.add('show');
-      modalBackdrop.classList.remove('hidden');
-      modalBackdrop.setAttribute('aria-hidden','false');
+/* ---------- Defaults ---------- */
+function ensureDefaults(){
+  const def = ['Common','Ravikumar','Divya','Sarnith','Nethra'];
+  if (!members || members.length === 0) members = [...def];
+  members = Array.from(new Set(members));
+  // ensure Common is first
+  members = members.filter(m => m !== 'Common');
+  members.unshift('Common');
+  save();
+}
 
-      function cleanup(result) {
-        modalBackdrop.classList.remove('show');
-        modalBackdrop.classList.add('hidden');
-        modalBackdrop.setAttribute('aria-hidden','true');
-        modalOk.removeEventListener('click', ok);
-        modalCancel.removeEventListener('click', cancel);
-        resolve(result);
-      }
-      function ok() { cleanup(true); }
-      function cancel() { cleanup(false); }
-      modalOk.addEventListener('click', ok);
-      modalCancel.addEventListener('click', cancel);
+/* ---------- Member Select ---------- */
+function renderMemberSelect(){
+  const prev = selectMember.value;
+  selectMember.innerHTML = '';
+  members.forEach(m => {
+    const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o);
+  });
+  if (members.includes(prev)) selectMember.value = prev;
+}
+
+/* ---------- Items Master Table ---------- */
+function renderItemsTable(){
+  itemsTableBody.innerHTML = '';
+  items.forEach(it => {
+    const tr = document.createElement('tr');
+    const qtyDisplay = (it.qty === null || it.qty === undefined || it.qty === '') ? '' : `<span class="qty-pill">${esc(it.qty)}</span>`;
+    tr.innerHTML = `<td><strong style="${it.done ? 'opacity:0.6;text-decoration:line-through' : ''}">${esc(it.name)}</strong></td>
+                    <td>${qtyDisplay}</td>
+                    <td>${esc(it.member)}</td>
+                    <td class="actions">
+                      <button class="icon-btn edit-item" data-id="${it.id}" title="Edit">✏️</button>
+                      <button class="icon-btn" data-id="${it.id}" title="Delete" style="color:var(--danger)">🗑️</button>
+                    </td>`;
+    itemsTableBody.appendChild(tr);
+  });
+  itemCount.textContent = items.length;
+
+  // delete listeners
+  itemsTableBody.querySelectorAll('button[title="Delete"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const confirmed = await showConfirm('Delete this item from Master List?', 'Delete');
+      if (!confirmed) return;
+      items = items.filter(x => x.id !== id);
+      save(); renderItemsTable(); if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
+      showToast('Item deleted');
     });
-  }
+  });
 
-  // Tab switching
-  tabs.forEach(btn => {
+  // edit listeners
+  itemsTableBody.querySelectorAll('.edit-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      tabs.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-      btn.classList.add('active'); btn.setAttribute('aria-selected','true');
-      const t = btn.dataset.tab;
-      panels.forEach(p => p.style.display = p.id === t ? '' : 'none');
-      if (t === 'items') renderItemsTable();
-      if (t === 'checklist') renderChecklist();
-      if (t === 'members') renderMembersTable();
+      const id = btn.dataset.id;
+      const it = items.find(x => x.id === id);
+      if (!it) return;
+      const newName = prompt('Edit item name:', it.name);
+      if (newName === null) return;
+      const nm = newName.trim();
+      if (!nm) return alert('Name cannot be empty.');
+      const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
+      if (newQty === null) return;
+      const qVal = newQty.trim() === '' ? null : newQty.trim();
+      const newMember = prompt('Edit member (enter exact name):', it.member);
+      if (newMember === null) return;
+      if (!members.includes(newMember)) return alert('Member not found. Edit Members tab first.');
+      it.name = nm; it.qty = qVal; it.member = newMember;
+      save(); renderItemsTable(); if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
+      showToast('Item updated');
     });
   });
+}
 
-  // Defaults
-  function ensureDefaults() {
-    const def = ['Common','Ravikumar','Divya','Sarnith','Nethra'];
-    if (!members || members.length === 0) members = [...def];
-    members = Array.from(new Set(members));
-    members = members.filter(m => m !== 'Common');
-    members.unshift('Common');
-    save();
-  }
+/* ---------- Add Item ---------- */
+addItemBtn.addEventListener('click', () => {
+  const member = selectMember.value;
+  const name = (itemName.value || '').trim();
+  const qtyRaw = (itemQty.value || '').trim();
+  const qty = qtyRaw === '' ? null : qtyRaw;
+  if (!member) return alert('Select a member.');
+  if (!name) return alert('Enter an item name.');
+  items.push({ id: uid(), name, qty, member, done: false, createdAt: Date.now() });
+  // reset inputs
+  itemName.value = '';
+  itemQty.value = '';
+  if (selectMember.options.length) selectMember.selectedIndex = 0;
+  save(); renderItemsTable(); if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
+  showToast('Item added successfully');
+});
+itemName.addEventListener('keydown', e => { if (e.key === 'Enter') addItemBtn.click(); });
 
-  // Render member select
-  function renderMemberSelect() {
-    const prev = selectMember.value;
-    selectMember.innerHTML = '';
-    members.forEach(m => {
-      const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o);
-    });
-    if (members.includes(prev)) selectMember.value = prev;
-  }
-
-  // Render items table
-  function renderItemsTable() {
-    itemsTableBody.innerHTML = '';
-    items.forEach(it => {
-      const tr = document.createElement('tr');
-      const qtyDisplay = (it.qty === null || it.qty === undefined || it.qty === '') ? '' : `<span class="qty-pill">${esc(it.qty)}</span>`;
-      tr.innerHTML = `<td class="wrap"><strong style="${it.done ? 'opacity:0.6;text-decoration:line-through' : ''}">${esc(it.name)}</strong></td>
-                      <td>${qtyDisplay}</td>
-                      <td>${esc(it.member)}</td>
-                      <td class="actions">
-                        <button class="icon-btn edit-item" data-id="${it.id}" title="Edit">✏️</button>
-                        <button class="icon-btn danger del-item" data-id="${it.id}" title="Delete">🗑️</button>
-                      </td>`;
-      itemsTableBody.appendChild(tr);
-    });
-    itemCount.textContent = items.length;
-
-    // listeners
-    itemsTableBody.querySelectorAll('.del-item').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
-        const confirmed = await showConfirm('Delete this item from Master List?', 'Delete', 'danger');
-        if (!confirmed) return;
-        items = items.filter(x => x.id !== id);
-        save(); renderItemsTable(); // update checklist if visible
-        if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
-        showToast('Item deleted');
-      });
-    });
-
-    itemsTableBody.querySelectorAll('.edit-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        const it = items.find(x => x.id === id);
-        if (!it) return;
-        const newName = prompt('Edit item name:', it.name);
-        if (newName === null) return;
-        const nm = newName.trim();
-        if (!nm) return alert('Name cannot be empty.');
-        const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
-        if (newQty === null) return;
-        const qVal = newQty.trim() === '' ? null : Number(newQty);
-        if (qVal !== null && (!Number.isFinite(qVal) || qVal < 1)) return alert('Quantity must be a positive number or left blank.');
-        const newMember = prompt('Edit member (enter exact name):', it.member);
-        if (newMember === null) return;
-        if (!members.includes(newMember)) return alert('Member not found. Add members in Members tab first.');
-        it.name = nm; it.qty = qVal; it.member = newMember;
-        save(); renderItemsTable(); if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
-        showToast('Item updated');
-      });
-    });
-  }
-
-  // Add item
-  addItemBtn.addEventListener('click', () => {
-    const member = selectMember.value;
-    const name = (itemName.value || '').trim();
-    const qtyRaw = (itemQty.value || '').toString().trim();
-    const qty = qtyRaw === '' ? null : Number(qtyRaw);
-    if (!member) return alert('Select a member.');
-    if (!name) return alert('Enter an item name.');
-    if (qty !== null && (!Number.isFinite(qty) || qty < 1)) return alert('Quantity must be positive or left blank.');
-    items.push({ id: uid(), name, qty, member, done: false, createdAt: Date.now() });
-    // reset inputs & member to first option
-    itemName.value = '';
-    itemQty.value = '';
-    if (selectMember.options.length) selectMember.selectedIndex = 0;
-    save(); renderItemsTable();
-    if (document.querySelector('.tab-btn.active').dataset.tab === 'checklist') renderChecklist();
-    showToast('Item added successfully');
-  });
-  itemName.addEventListener('keydown', e => { if (e.key === 'Enter') addItemBtn.click(); });
-
-  // CHECKLIST
-  function renderChecklist() {
-    // group items by member (members array order ensures Common is first)
-    const grouped = {};
-    members.forEach(m => grouped[m] = []);
-    items.forEach(it => {
-      if (!grouped[it.member]) grouped[it.member] = [];
-      grouped[it.member].push(it);
-    });
-
-    // sort per mode
-    const mode = sortMode.value || 'added';
-    for (const k in grouped) {
-      if (mode === 'name') grouped[k].sort((a,b)=>a.name.localeCompare(b.name));
-      else grouped[k].sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
-    }
-
-    groupedChecklist.innerHTML = '';
-    let totalPacked = 0, totalItems = 0;
-
-    members.forEach((memberName, idx) => {
-      const arr = grouped[memberName] || [];
-      const pending = arr.filter(x => !x.done);
-      const packed = arr.filter(x => x.done);
-      totalPacked += packed.length;
-      totalItems += arr.length;
-      const arrToShow = showOnlyPending ? pending : [...pending, ...packed];
-      if (arrToShow.length === 0) {
-        if (!showOnlyPending) {
-          const block = document.createElement('div'); block.className = `member-block ${tintClasses[idx % tintClasses.length]}`;
-          const header = document.createElement('div'); header.className = 'member-title';
-          header.innerHTML = `<span>${memberName === 'Common' ? '🏠 Common' : '👤 ' + esc(memberName)}</span><span class="small muted-text">(no items)</span>`;
-          block.appendChild(header);
-          groupedChecklist.appendChild(block);
-        }
-        return;
-      }
-
-      const block = document.createElement('div'); block.className = `member-block ${tintClasses[idx % tintClasses.length]}`;
-      const header = document.createElement('div'); header.className = 'member-title';
-      header.innerHTML = `<span>${memberName === 'Common' ? '🏠 Common' : '👤 ' + esc(memberName)}</span><span class="small muted-text">${arr.length} item(s) • ${packed.length} packed</span>`;
-      block.appendChild(header);
-
-      const list = document.createElement('div'); list.className = 'member-items';
-      arrToShow.forEach(c => {
-        const row = document.createElement('div'); row.className = 'chk-item';
-        const qtyText = (c.qty == null || c.qty === '') ? '' : `<span class="qty-pill">${esc(c.qty)}</span>`;
-        // make layout wrap-friendly: left part and right actions
-        row.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
-            <input type="checkbox" class="chkbox" data-id="${c.id}" ${c.done ? 'checked' : ''} />
-            <div style="min-width:0;overflow:hidden" class="wrap">
-              <div style="white-space:normal;">
-                <strong style="${c.done ? 'opacity:0.6;text-decoration:line-through' : ''}">${esc(c.name)}</strong>
-                ${qtyText ? ` <span style="margin-left:6px">${qtyText}</span>` : ''}
-              </div>
-            </div>
-          </div>
-          <div style="white-space:nowrap;flex:0 0 auto">
-            <button class="icon-btn edit-item" data-id="${c.id}" title="Edit">✏️</button>
-            <button class="icon-btn danger del-item" data-id="${c.id}" title="Delete">🗑️</button>
-          </div>`;
-        list.appendChild(row);
-      });
-
-      block.appendChild(list);
-      groupedChecklist.appendChild(block);
-    });
-
-    // listeners for toggles & actions
-    groupedChecklist.querySelectorAll('.chkbox').forEach(cb => {
-      cb.addEventListener('change', () => {
-        const id = cb.dataset.id;
-        const it = items.find(x=>x.id===id);
-        if (!it) return;
-        it.done = cb.checked;
-        save();
-        // update progress bar smoothly
-        updateProgressBar();
-        // re-render checklist to keep pending above packed (and packed bottom)
-        renderChecklist();
-        // update master list visual
-        renderItemsTable();
-      });
-    });
-
-    groupedChecklist.querySelectorAll('.del-item').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
-        const confirmed = await showConfirm('Delete this item from Master List?', 'Delete', 'danger');
-        if (!confirmed) return;
-        items = items.filter(x=>x.id !== id);
-        save(); renderChecklist(); renderItemsTable();
-        showToast('Item deleted');
-      });
-    });
-
-    groupedChecklist.querySelectorAll('.edit-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        const it = items.find(x=>x.id === id);
-        if (!it) return;
-        const newName = prompt('Edit item name:', it.name);
-        if (newName === null) return;
-        const nm = newName.trim(); if (!nm) return alert('Name cannot be empty.');
-        const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
-        if (newQty === null) return;
-        const qVal = newQty.trim() === '' ? null : Number(newQty);
-        if (qVal !== null && (!Number.isFinite(qVal) || qVal < 1)) return alert('Quantity must be positive or left blank.');
-        const newMember = prompt('Edit member (enter exact name):', it.member);
-        if (newMember === null) return;
-        if (!members.includes(newMember)) return alert('Member not found. Add in Members tab.');
-        it.name = nm; it.qty = qVal; it.member = newMember;
-        save(); renderChecklist(); renderItemsTable();
-        showToast('Item updated');
-      });
-    });
-
-    updateProgressBar(); // ensure bar updated on render
-  }
-
-  // Progress bar update (only in checklist)
-  function updateProgressBar() {
-    const total = items.length;
-    const packed = items.filter(x=>x.done).length;
-    const pct = total === 0 ? 0 : Math.round((packed / total) * 100);
-    progressBar.style.width = pct + '%';
-    progressText.textContent = `${pct}% Packed`;
-    if (pct === 100 && total>0) {
-      progressBar.style.background = `linear-gradient(90deg, ${getComputedStyle(document.documentElement).getPropertyValue('--success') || '#16a34a'}, ${getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#4fb3ff'})`;
-    } else {
-      progressBar.style.background = `linear-gradient(90deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary') || '#1976d2'}, ${getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#4fb3ff'})`;
-    }
-  }
-
-  // Show only pending toggle
-  showOnlyPendingBtn.addEventListener('click', () => {
-    showOnlyPending = !showOnlyPending;
-    showOnlyPendingBtn.textContent = showOnlyPending ? 'Show All' : 'Show Only Pending';
-    renderChecklist();
-  });
-
-  sortMode.addEventListener('change', renderChecklist);
-
-  clearPackedBtn.addEventListener('click', async () => {
-    const confirmed = await showConfirm('Remove all packed items from the Master List? This cannot be undone.', 'Remove', 'danger');
-    if (!confirmed) return;
-    items = items.filter(x=>!x.done);
-    save(); renderChecklist(); renderItemsTable();
-    showToast('Packed items removed');
-  });
-
-  // MEMBERS
-  function renderMembersTable() {
-    membersTableBody.innerHTML = '';
-    members.forEach(m => {
-      const isCommon = m === 'Common';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><strong>${esc(m)}</strong></td>
-                      <td class="actions">
-                        <button class="icon-btn edit-member" data-name="${esc(m)}" ${isCommon ? 'disabled title="Cannot rename Common"' : ''}>✏️</button>
-                        <button class="icon-btn danger del-member" data-name="${esc(m)}" ${isCommon ? 'disabled title="Cannot delete Common"' : ''}>🗑️</button>
-                      </td>`;
-      membersTableBody.appendChild(tr);
-    });
-    memberCount.textContent = members.length;
-
-    membersTableBody.querySelectorAll('.edit-member').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const oldName = btn.dataset.name;
-        const newName = prompt('Edit member name:', oldName);
-        if (newName === null) return;
-        const v = newName.trim(); if (!v) return alert('Name cannot be empty.');
-        if (members.find(m=>m.toLowerCase()===v.toLowerCase())) return alert('Member already exists.');
-        members = members.map(m => m === oldName ? v : m);
-        items.forEach(it => { if (it.member === oldName) it.member = v; });
-        save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
-        showToast('Member renamed');
-      });
-    });
-
-    membersTableBody.querySelectorAll('.del-member').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const name = btn.dataset.name;
-        const assigned = items.filter(it => it.member === name);
-        if (assigned.length > 0) {
-          const confirmed = await showConfirm(`${name} has ${assigned.length} assigned item(s). Click OK to reassign those items to Common and delete the member.`, 'Reassign & Delete', 'danger');
-          if (!confirmed) return;
-          assigned.forEach(it => it.member = 'Common');
-          members = members.filter(m => m !== name);
-          save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
-          showToast('Member deleted and items reassigned to Common');
-          return;
-        } else {
-          const confirmed = await showConfirm(`Delete member "${name}"?`, 'Delete', 'danger');
-          if (!confirmed) return;
-          members = members.filter(m => m !== name);
-          save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
-          showToast('Member deleted');
-        }
-      });
-    });
-  }
-
-  addMemberBtn.addEventListener('click', () => {
-    const v = (memberInput.value || '').trim();
-    if (!v) return alert('Enter member name.');
-    if (members.find(m=>m.toLowerCase()===v.toLowerCase())) return alert('Member already exists.');
-    members.push(v);
-    memberInput.value = '';
-    save(); renderMemberSelect(); renderMembersTable(); showToast('Member added');
-  });
-  memberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMemberBtn.click(); });
-
-  function renderMemberSelect() {
-    const prev = selectMember.value;
-    selectMember.innerHTML = '';
-    members.forEach(m => {
-      const o = document.createElement('option'); o.value = m; o.textContent = m; selectMember.appendChild(o);
-    });
-    if (members.includes(prev)) selectMember.value = prev;
-  }
-
-  // BACKUP & RESTORE
-  exportBtn.addEventListener('click', () => {
-    const data = { members, items, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'packing_backup.json'; a.click(); URL.revokeObjectURL(url);
-    showToast('Backup downloaded');
-  });
-
-  exportCompactBtn.addEventListener('click', () => {
-    const data = { members, items };
-    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'packing_compact.json'; a.click(); URL.revokeObjectURL(url);
-    showToast('Compact backup downloaded');
-  });
-
-  importBtn.addEventListener('click', () => {
-    if (!fileInput.files || !fileInput.files[0]) return alert('Choose a JSON file first.');
-    const fr = new FileReader();
-    fr.onload = (e) => {
-      try {
-        const d = JSON.parse(e.target.result);
-        if (!Array.isArray(d.members) || !Array.isArray(d.items)) return alert('Invalid file format. Expect { members:[], items:[] }');
-        if (!confirm('This will replace current members and items. Continue?')) return;
-        members = Array.from(new Set(d.members));
-        items = d.items.map(c => ({
-          id: c.id || uid(),
-          name: c.name || '',
-          qty: c.qty === undefined ? null : (c.qty === '' ? null : c.qty),
-          member: c.member || 'Common',
-          done: !!c.done,
-          createdAt: c.createdAt || Date.now()
-        })).filter(c => c.name && c.member);
-        save(); renderAll();
-        fileInput.value = ''; // reset file input
-        showToast('Restore complete');
-      } catch (err) { alert('Failed to parse file: ' + err.message); }
-    };
-    fr.readAsText(fileInput.files[0]);
-  });
-
-  clearAllBtn.addEventListener('click', async () => {
-    const confirmed = await showConfirm('Clear ALL data (members and items)?', 'Clear All', 'danger');
-    if (!confirmed) return;
-    members = []; items = [];
-    save(); renderAll();
-    showToast('All data cleared');
-  });
-
-  // Helpers & init
-  function renderAll() {
-    ensureDefaults();
-    renderMemberSelect();
-    renderItemsTable();
-    renderMembersTable();
-    renderChecklist();
+/* ---------- Checklist Rendering ---------- */
+function renderChecklist(){
+  groupedChecklist.innerHTML = '';
+  if (!items.length) {
+    groupedChecklist.innerHTML = '<div class="small">No items added yet.</div>';
     updateProgressBar();
+    return;
   }
 
-  function init() {
-    load();
-    ensureDefaults();
-    renderAll();
-    // show items panel by default
-    panels.forEach(p => p.style.display = p.id === 'items' ? '' : 'none');
+  // group by members order
+  const grouped = {};
+  members.forEach(m => grouped[m] = []);
+  items.forEach(it => {
+    if (!grouped[it.member]) grouped[it.member] = [];
+    grouped[it.member].push(it);
+  });
+
+  // sort groups
+  const mode = sortMode.value || 'created';
+  for (const k in grouped) {
+    if (mode === 'name') grouped[k].sort((a,b) => a.name.localeCompare(b.name));
+    else grouped[k].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
   }
-  init();
+
+  let totalPacked = 0, totalItems = 0;
+  members.forEach((memberName, idx) => {
+    const arr = grouped[memberName] || [];
+    if (arr.length === 0) return;
+    const pending = arr.filter(x => !x.done);
+    const packed = arr.filter(x => x.done);
+    totalPacked += packed.length;
+    totalItems += arr.length;
+    const arrToShow = showOnlyPending ? pending : [...pending, ...packed];
+
+    // skip if nothing to show (when showOnlyPending)
+    if (arrToShow.length === 0 && showOnlyPending) return;
+
+    const block = document.createElement('div');
+    block.className = `member-block ${tintClasses[idx % tintClasses.length]}`;
+    const header = document.createElement('div');
+    header.className = 'member-title';
+    header.innerHTML = `<span>${memberName === 'Common' ? '🏠 Common' : '👤 ' + esc(memberName)}</span><span class="small">${arr.length} item(s) • ${packed.length} packed</span>`;
+    block.appendChild(header);
+
+    const list = document.createElement('div');
+    list.className = 'member-items';
+
+    arrToShow.forEach(c => {
+      const row = document.createElement('div'); row.className = 'chk-item';
+      const qtyText = (c.qty == null || c.qty === '') ? '' : `<span class="qty-pill">${esc(c.qty)}</span>`;
+      row.innerHTML = `
+        <div class="chk-left" role="group" aria-label="${esc(c.name)}">
+          <input type="checkbox" class="chkbox" data-id="${c.id}" ${c.done ? 'checked' : ''} aria-checked="${c.done ? 'true':'false'}" />
+          <div class="item-viewport">
+            <div class="item-name truncate" title="${esc(c.name)}">${esc(c.name)}</div>
+            <div class="item-edges"><div class="fade-left"></div><div class="fade-right"></div></div>
+          </div>
+          ${qtyText}
+        </div>
+        <div style="white-space:nowrap;flex:0 0 auto">
+          <button class="icon-btn edit-item" data-id="${c.id}" title="Edit">✏️</button>
+          <button class="icon-btn" data-id="${c.id}" title="Delete" style="color:var(--danger)">🗑️</button>
+        </div>`;
+      list.appendChild(row);
+    });
+
+    block.appendChild(list);
+    groupedChecklist.appendChild(block);
+  });
+
+  // attach listeners
+  groupedChecklist.querySelectorAll('.chkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const id = cb.dataset.id;
+      const it = items.find(x => x.id === id);
+      if (!it) return;
+      it.done = cb.checked;
+      save();
+      updateProgressBar();
+      // re-render to keep pending above packed
+      renderChecklist();
+      renderItemsTable();
+    });
+  });
+
+  groupedChecklist.querySelectorAll('button[title="Delete"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const confirmed = await showConfirm('Delete this item from Master List?', 'Delete');
+      if (!confirmed) return;
+      items = items.filter(x => x.id !== id);
+      save(); renderChecklist(); renderItemsTable();
+      showToast('Item deleted');
+    });
+  });
+
+  groupedChecklist.querySelectorAll('.edit-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const it = items.find(x => x.id === id);
+      if (!it) return;
+      const newName = prompt('Edit item name:', it.name);
+      if (newName === null) return;
+      const nm = newName.trim(); if (!nm) return alert('Name cannot be empty.');
+      const newQty = prompt('Edit quantity (leave blank for none):', it.qty == null ? '' : it.qty);
+      if (newQty === null) return;
+      const qVal = newQty.trim() === '' ? null : newQty.trim();
+      const newMember = prompt('Edit member (enter exact name):', it.member);
+      if (newMember === null) return;
+      if (!members.includes(newMember)) return alert('Member not found. Add in Members tab.');
+      it.name = nm; it.qty = qVal; it.member = newMember;
+      save(); renderChecklist(); renderItemsTable(); showToast('Item updated');
+    });
+  });
+
+  // attach hover/touch ticker handlers for item names
+  attachTickerHandlers(groupedChecklist);
+
+  updateProgressBar();
+}
+
+/* ---------- Ticker handlers (hover/tap to scroll) ---------- */
+function attachTickerHandlers(container){
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  container.querySelectorAll('.item-viewport').forEach(vp => {
+    const nameEl = vp.querySelector('.item-name');
+    if (!nameEl) return;
+    nameEl.classList.add('truncate');
+    // add fades already in DOM
+    if (!isTouch) {
+      vp.addEventListener('mouseenter', () => startTicker(vp,nameEl));
+      vp.addEventListener('mouseleave', () => stopTicker(vp,nameEl));
+    } else {
+      vp.addEventListener('click', (e) => {
+        // toggle on tap
+        if (nameEl.dataset.running === '1') stopTicker(vp,nameEl); else startTicker(vp,nameEl);
+      });
+    }
+  });
+}
+const tickerState = new WeakMap();
+function startTicker(viewport, nameEl){
+  const key = nameEl;
+  // if already running, do nothing
+  const st = tickerState.get(key);
+  if (st && st.running) return;
+  const vw = viewport.clientWidth;
+  const sw = nameEl.scrollWidth;
+  const diff = sw - vw;
+  if (diff <= 2) return;
+  const speed = 48; // px/s
+  const duration = Math.max(4, diff / speed);
+  let start = null;
+  function frame(ts){
+    if (!start) start = ts;
+    const elapsed = (ts - start) / 1000;
+    const progress = Math.min(1, elapsed / duration);
+    const x = -diff * progress;
+    nameEl.style.transform = `translateX(${x}px)`;
+    if (progress < 1) {
+      const id = requestAnimationFrame(frame);
+      tickerState.set(key, { raf:id, running:true });
+    } else {
+      // pause at end, reset and loop
+      setTimeout(()=> {
+        nameEl.style.transform = `translateX(0)`;
+        // small pause then restart
+        setTimeout(()=> { start = null; const id = requestAnimationFrame(frame); tickerState.set(key,{raf:id, running:true}); }, 300);
+      }, 600);
+    }
+  }
+  const id = requestAnimationFrame(frame);
+  tickerState.set(key, { raf:id, running:true });
+  nameEl.dataset.running = '1';
+}
+function stopTicker(viewport, nameEl){
+  const key = nameEl;
+  const st = tickerState.get(key);
+  if (st && st.raf) cancelAnimationFrame(st.raf);
+  nameEl.style.transform = 'translateX(0)';
+  tickerState.set(key, { raf:null, running:false });
+  nameEl.dataset.running = '0';
+}
+
+/* ---------- Progress ---------- */
+function updateProgressBar(){
+  const total = items.length;
+  const packed = items.filter(x => x.done).length;
+  const pct = total === 0 ? 0 : Math.round((packed / total) * 100);
+  progressBar.style.width = pct + '%';
+  progressText.textContent = `${pct}% Packed`;
+  if (pct === 100 && total > 0) {
+    progressBar.style.background = `linear-gradient(90deg, var(--success), var(--accent))`;
+  } else {
+    progressBar.style.background = `linear-gradient(90deg, var(--primary), var(--accent))`;
+  }
+}
+
+/* ---------- Controls ---------- */
+showOnlyPendingBtn.addEventListener('click', () => {
+  showOnlyPending = !showOnlyPending;
+  showOnlyPendingBtn.textContent = showOnlyPending ? 'Show All' : 'Show Only Pending';
+  renderChecklist();
+});
+
+sortMode.addEventListener('change', renderChecklist);
+
+clearPackedBtn.addEventListener('click', async () => {
+  const confirmed = await showConfirm('Remove all packed items from the Master List? This cannot be undone.', 'Remove');
+  if (!confirmed) return;
+  items = items.filter(x => !x.done);
+  save(); renderChecklist(); renderItemsTable();
+  showToast('Packed items removed');
+});
+
+/* ---------- Members ---------- */
+function renderMembersTable(){
+  membersTableBody.innerHTML = '';
+  members.forEach((m, idx) => {
+    const tr = document.createElement('tr');
+    const isCommon = m === 'Common';
+    tr.innerHTML = `<td><strong>${esc(m)}</strong></td>
+      <td class="actions">${isCommon ? '—' : `<button class="icon-btn edit-member" data-i="${idx}">✏️</button> <button class="icon-btn del-member" data-i="${idx}" style="color:var(--danger)">🗑️</button>`}</td>`;
+    membersTableBody.appendChild(tr);
+  });
+  memberCount.textContent = members.length;
+
+  membersTableBody.querySelectorAll('.edit-member').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = Number(btn.dataset.i);
+      const old = members[i];
+      const newName = prompt('Edit member name:', old);
+      if (newName === null) return;
+      const v = newName.trim(); if (!v) return alert('Name cannot be empty.');
+      if (members.find(m=>m.toLowerCase()===v.toLowerCase())) return alert('Member already exists.');
+      members = members.map(m => m === old ? v : m);
+      items.forEach(it => { if (it.member === old) it.member = v; });
+      save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+      showToast('Member renamed');
+    });
+  });
+
+  membersTableBody.querySelectorAll('.del-member').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const i = Number(btn.dataset.i);
+      const name = members[i];
+      const assigned = items.filter(it => it.member === name);
+      if (assigned.length > 0) {
+        const confirmed = await showConfirm(`${name} has ${assigned.length} assigned item(s). Click OK to reassign those items to Common and delete the member.`, 'Reassign & Delete');
+        if (!confirmed) return;
+        assigned.forEach(it => it.member = 'Common');
+        members = members.filter(m => m !== name);
+        save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+        showToast('Member deleted and items reassigned to Common');
+        return;
+      } else {
+        const confirmed = await showConfirm(`Delete member "${name}"?`, 'Delete');
+        if (!confirmed) return;
+        members = members.filter(m => m !== name);
+        save(); renderMemberSelect(); renderMembersTable(); renderItemsTable(); renderChecklist();
+        showToast('Member deleted');
+      }
+    });
+  });
+}
+
+addMemberBtn.addEventListener('click', () => {
+  const v = (memberInput.value || '').trim();
+  if (!v) return alert('Enter member name.');
+  if (members.find(m => m.toLowerCase() === v.toLowerCase())) return alert('Member already exists.');
+  members.push(v);
+  memberInput.value = '';
+  save(); renderMemberSelect(); renderMembersTable(); showToast('Member added');
+});
+memberInput.addEventListener('keydown', e => { if (e.key === 'Enter') addMemberBtn.click(); });
+
+/* ---------- Backup & Restore ---------- */
+exportBtn.addEventListener('click', () => {
+  const data = { members, items, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'packing_backup.json'; a.click(); URL.revokeObjectURL(url);
+  showToast('Backup downloaded');
+});
+
+exportCompactBtn.addEventListener('click', () => {
+  const data = { members, items };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'packing_compact.json'; a.click(); URL.revokeObjectURL(url);
+  showToast('Compact backup downloaded');
+});
+
+importBtn.addEventListener('click', () => {
+  if (!fileInput.files || !fileInput.files[0]) return alert('Choose a JSON file first.');
+  const fr = new FileReader();
+  fr.onload = (e) => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!Array.isArray(d.members) || !Array.isArray(d.items)) return alert('Invalid file format. Expect { members:[], items:[] }');
+      if (!confirm('This will replace current members and items. Continue?')) return;
+      members = Array.from(new Set(d.members));
+      items = d.items.map(c => ({
+        id: c.id || uid(),
+        name: c.name || '',
+        qty: c.qty === undefined ? null : (c.qty === '' ? null : c.qty),
+        member: c.member || 'Common',
+        done: !!c.done,
+        createdAt: c.createdAt || Date.now()
+      })).filter(c => c.name && c.member);
+      save(); renderAll();
+      fileInput.value = ''; // reset file input
+      showToast('Restore complete');
+    } catch (err) { alert('Failed to parse file: ' + err.message); }
+  };
+  fr.readAsText(fileInput.files[0]);
+});
+
+clearAllBtn.addEventListener('click', async () => {
+  const confirmed = await showConfirm('Clear ALL data (members and items)?', 'Clear All');
+  if (!confirmed) return;
+  members = []; items = [];
+  save(); renderAll();
+  showToast('All data cleared');
+});
+
+/* ---------- Render All ---------- */
+function renderAll(){
+  ensureDefaults();
+  renderMemberSelect();
+  renderItemsTable();
+  renderMembersTable();
+  renderChecklist();
+  updateProgressBar();
+}
+
+/* ---------- Init ---------- */
+function init(){
+  load();
+  ensureDefaults();
+  renderAll();
+  // show items panel default
+  panels.forEach(p => p.style.display = p.id === 'items' ? '' : 'none');
+}
+init();
 </script>
 </body>
 </html>
